@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/miHome"
+        android:title="@string/title_home"
+        android:icon="@drawable/ic_home_black_24dp" />
+
+    <item
+        android:id="@+id/miFilter"
+        android:title="@string/title_filter"
+        android:icon="@drawable/baseline_filter_alt_24"/>
+
+    <item
+        android:id="@+id/miAdd"
+        android:title="@string/title_add"
+        android:icon="@drawable/baseline_add_24"/>
+
+    <item
+        android:id="@+id/miSettings"
+        android:title="@string/title_settings"
+        android:icon="@drawable/baseline_settings_24"/>
+</menu>

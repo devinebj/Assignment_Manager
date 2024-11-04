@@ -1,8 +1,9 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Assignment Manager</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="title_activity_add_class">AddClassActivity</string>
-    <string name="title_activity_add_assignment">AddAssignmentActivity</string>
+    <string name="title_filter">Filter Classes</string>
+    <string name="title_add">Add Class</string>
+    <string name="title_settings">Settings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
