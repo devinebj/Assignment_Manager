@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+        getSupportActionBar().hide();
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
@@ -31,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.miAdd:
                     selectedFragment = new AddAssignmentFragment();
+                    break;
+                case R.id.miSettings:
+                    selectedFragment = new SettingsFragment();
                     break;
             }
 
