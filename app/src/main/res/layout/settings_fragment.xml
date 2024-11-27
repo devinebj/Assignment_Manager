@@ -3,71 +3,74 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:fillViewport="true"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
 
-        <LinearLayout
+    <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <!--Semester End Date-->
             <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
                 android:id="@+id/semester_end_date_tv"
-                android:text="Semester End Date"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/blue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
                 android:background="@null"
-                android:layout_gravity="left"
-                android:paddingTop="20dp" />
+                android:paddingTop="20dp"
+                android:text="Semester End Date"
+                android:textColor="@color/blue"
+                android:textSize="25sp"
+                android:textStyle="bold" />
 
             <CalendarView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="325dp" />
 
             <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
                 android:id="@+id/classes_tv"
-                android:text="Classes"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                android:textColor="@color/blue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
                 android:background="@null"
-                android:layout_gravity="left"/>
+                android:text="Classes"
+                android:textColor="@color/blue"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <Button
+                android:id="@+id/addClassButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/addClassButton"
-                android:text="Add Class"/>
+                android:text="Add Class" />
 
             <!--Classes-->
             <ListView
+                android:id="@+id/classes_lv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/classes_lv"
-                android:layout_weight="1"/>
+                android:background="@android:drawable/edit_text"
+                android:entries="@android:array/phoneTypes" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="25dp" />
 
             <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
                 android:id="@+id/notifications_tv"
-                android:text="Notifications"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/blue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
                 android:background="@null"
-                android:layout_gravity="left"
-                android:layout_weight="1"/>
+                android:text="Notifications"
+                android:textColor="@color/blue"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <!--Notifications-->
             <LinearLayout
@@ -76,26 +79,30 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Days in advance to notify"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:textSize="15dp"
-                    android:textColor="@color/black"/>
+                    android:text="Days in advance to notify"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
 
-                <NumberPicker
+                <EditText
                     android:layout_width="wrap_content"
-                    android:layout_height="25dp"
-                    android:layout_gravity="right" />
+                    android:layout_height="48dp"
+                    android:layout_gravity="end"
+                    android:layout_weight="0.1"
+                    android:hint="0"
+                    android:inputType="number" />
 
             </LinearLayout>
 
-            <Switch
-                android:layout_width="wrap_content"
+            <androidx.appcompat.widget.SwitchCompat
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Remove assignment after due date"
-                android:switchPadding="120dp"/>
+                android:fitsSystemWindows="true"
+                android:text="Remove assignment after due date" />
 
         </LinearLayout>
-    </ScrollView>
+</ScrollView>
 

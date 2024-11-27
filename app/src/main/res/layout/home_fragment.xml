@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_home"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
@@ -21,14 +21,14 @@
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            />
+            android:layout_gravity="top" />
 
         <ListView
             android:id="@+id/AssignmentList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:entries="@android:array/phoneTypes"></ListView>
+            android:entries="@android:array/phoneTypes">
+        </ListView>
 
     </LinearLayout>
 
