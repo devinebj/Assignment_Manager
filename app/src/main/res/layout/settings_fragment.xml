@@ -54,8 +54,7 @@
                 android:id="@+id/classes_lv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:drawable/edit_text"
-                android:entries="@android:array/phoneTypes" />
+                android:background="@android:drawable/edit_text" />
 
             <View
                 android:layout_width="match_parent"
@@ -88,6 +87,7 @@
                     android:textSize="15sp" />
 
                 <EditText
+                    android:id="@+id/daysToNotifyET"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:layout_gravity="end"

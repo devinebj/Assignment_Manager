@@ -17,16 +17,20 @@
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent">
 
+        <View
+            android:layout_height="65dp"
+            android:layout_width="match_parent" />
+
         <CalendarView
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="top" />
+            android:layout_gravity="center_vertical" />
 
         <ListView
             android:id="@+id/AssignmentList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:entries="@android:array/phoneTypes">
         </ListView>
 

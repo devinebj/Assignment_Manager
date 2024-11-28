@@ -24,10 +24,16 @@
             android:padding="15dp">
 
             <TextView
+                android:id="@+id/class_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/add_class"
-                android:textSize="25dp"/>
+                android:layout_gravity="start"
+                android:background="@null"
+                android:paddingTop="20dp"
+                android:text="Class"
+                android:textColor="@color/blue"
+                android:textSize="25sp"
+                android:textStyle="bold" />
 
             <Spinner
                 android:layout_width="wrap_content"
@@ -36,11 +42,16 @@
                 android:background="@android:drawable/btn_dropdown"/>
 
             <TextView
+                android:id="@+id/assignment_name_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/assignment_name"
-                android:textSize="25dp"
-                android:paddingTop="25dp"/>
+                android:layout_gravity="start"
+                android:background="@null"
+                android:paddingTop="20dp"
+                android:text="Asssignment Name"
+                android:textColor="@color/blue"
+                android:textSize="25sp"
+                android:textStyle="bold" />
 
             <EditText
                 android:layout_width="wrap_content"
@@ -54,11 +65,16 @@
                 android:paddingRight="100dp"/>
 
             <TextView
+                android:id="@+id/due_date_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/due_date"
-                android:textSize="25dp"
-                android:paddingTop="25dp"/>
+                android:layout_gravity="start"
+                android:background="@null"
+                android:paddingTop="20dp"
+                android:text="Due Date"
+                android:textColor="@color/blue"
+                android:textSize="25sp"
+                android:textStyle="bold" />
 
             <CalendarView
                 android:layout_width="wrap_content"

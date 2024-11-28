@@ -26,8 +26,8 @@ public class HomeFragment extends Fragment {
         CalendarView calendarView = rootView.findViewById(R.id.calendarView);
         rootView.findViewById(R.id.calendarView);
 
-        for(int i = 0; i < 26; i++){
-            assignments.add("Assignment " + ( i+1 ));
+        for(int i = 0; i < 5; i++){
+            assignments.add("Top assignment " + ( i+1 ));
         }
 
         assignmentsAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, assignments);
