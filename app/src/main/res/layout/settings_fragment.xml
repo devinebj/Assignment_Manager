@@ -50,13 +50,14 @@
                 android:text="Add Class" />
 
             <!--Classes-->
-            <ListView
-                android:id="@+id/classes_lv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:drawable/edit_text" />
 
-            <View
+        <ListView
+            android:id="@+id/classes_lv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/edit_text" />
+
+        <View
                 android:layout_width="match_parent"
                 android:layout_height="25dp" />
 
