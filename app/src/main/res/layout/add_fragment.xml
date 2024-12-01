@@ -24,18 +24,19 @@
             android:padding="15dp">
 
             <TextView
-                android:id="@+id/class_tv"
+                android:id="@+id/course_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:background="@null"
                 android:paddingTop="20dp"
-                android:text="Class"
+                android:text="Course"
                 android:textColor="@color/blue"
                 android:textSize="25sp"
                 android:textStyle="bold" />
 
             <Spinner
+                android:id="@+id/courses_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:spinnerMode="dropdown"
@@ -48,7 +49,7 @@
                 android:layout_gravity="start"
                 android:background="@null"
                 android:paddingTop="20dp"
-                android:text="Asssignment Name"
+                android:text="Assignment Name"
                 android:textColor="@color/blue"
                 android:textSize="25sp"
                 android:textStyle="bold" />

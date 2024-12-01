@@ -33,26 +33,26 @@
                 android:layout_height="325dp" />
 
             <TextView
-                android:id="@+id/classes_tv"
+                android:id="@+id/courses_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:background="@null"
-                android:text="Classes"
+                android:text="Courses"
                 android:textColor="@color/blue"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/addClassButton"
+                android:id="@+id/addCourseButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add Class" />
+                android:text="Add Course" />
 
-            <!--Classes-->
+            <!--Courses-->
 
-        <ListView
-            android:id="@+id/classes_lv"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/courses_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:drawable/edit_text" />

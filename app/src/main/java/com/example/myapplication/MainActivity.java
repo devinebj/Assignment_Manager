@@ -1,17 +1,14 @@
 package com.example.myapplication;
 
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.Toast;
 
+import com.example.myapplication.fragments.AddAssignmentFragment;
+import com.example.myapplication.fragments.HomeFragment;
+import com.example.myapplication.fragments.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-
-import com.example.myapplication.databinding.ActivityMainBinding;
-import com.google.android.material.navigation.NavigationBarView;
 
 public class MainActivity extends AppCompatActivity {
     @Override

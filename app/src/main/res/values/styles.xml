@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style name="Animation">
+        <item name="android:windowEnterAnimation">@anim/fade_in_slide</item>
+        <item name="android:windowExitAnimation">@anim/fade_out_slide</item>
+    </style>
+</resources>
