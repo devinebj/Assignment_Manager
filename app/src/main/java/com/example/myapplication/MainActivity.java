@@ -2,9 +2,6 @@ package com.example.myapplication;
 
 import android.os.Bundle;
 
-import com.example.myapplication.fragments.AddAssignmentFragment;
-import com.example.myapplication.fragments.HomeFragment;
-import com.example.myapplication.fragments.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;

@@ -1,4 +1,4 @@
-package com.example.myapplication.fragments;
+package com.example.myapplication;
 
 import android.content.Context;
 import android.util.Log;
@@ -11,14 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication.fragments.ViewModels.Course;
-import com.example.myapplication.R;
-import com.example.myapplication.fragments.ViewModels.SettingsData;
-
 import java.util.List;
 
-public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseViewHolder> implements SettingsData.IObserver {
-
+public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseViewHolder> implements Data.IObserver {
     private List<Course> courses;
     private Context context;
     private OnCourseClickListener listener;
@@ -29,7 +24,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
         this.courses = courses;
         this.listener = listener;
 
-        SettingsData.getInstance().registerObserver(this);
+        Data.getInstance().registerObserver(this);
     }
 
     @NonNull
@@ -73,10 +68,10 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
             courses.remove(position);
             notifyItemRemoved(position);
 
-            List<Course> sharedCourses = SettingsData.getInstance().getCourses();
+            List<Course> sharedCourses = Data.getInstance().getCourses();
             if(position < sharedCourses.size()) {
                 sharedCourses.remove(position);
-                SettingsData.getInstance().notifyRecyclerDataChanged();
+                Data.getInstance().notifyRecyclerDataChanged();
             }
         } else{
             Log.e("CourseAdapter", "Invalid position: " + position + ", List size: " + courses.size());
@@ -91,7 +86,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-        SettingsData.getInstance().unregisterObserver(this);
+        Data.getInstance().unregisterObserver(this);
     }
 
     public static class CourseViewHolder extends RecyclerView.ViewHolder {

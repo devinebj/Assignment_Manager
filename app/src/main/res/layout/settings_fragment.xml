@@ -1,109 +1,99 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:fillViewport="true">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-            android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Semester End Date Label -->
+        <TextView
+            android:id="@+id/semester_end_date_label"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:text="Semester End Date"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <!--Semester End Date-->
-            <TextView
-                android:id="@+id/semester_end_date_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:background="@null"
-                android:paddingTop="20dp"
-                android:text="Semester End Date"
-                android:textColor="@color/blue"
-                android:textSize="25sp"
-                android:textStyle="bold" />
+        <!-- Calendar View -->
+        <CalendarView
+            android:id="@+id/semester_end_date_calendar"
+            android:layout_width="0dp"
+            android:layout_height="325dp"
+            app:layout_constraintTop_toBottomOf="@id/semester_end_date_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-            <CalendarView
-                android:layout_width="wrap_content"
-                android:layout_height="325dp" />
+        <!-- Courses Label -->
+        <TextView
+            android:id="@+id/courses_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Courses"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            app:layout_constraintTop_toBottomOf="@id/semester_end_date_calendar"
+            app:layout_constraintStart_toStartOf="parent" />
 
-            <TextView
-                android:id="@+id/courses_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:background="@null"
-                android:text="Courses"
-                android:textColor="@color/blue"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+        <!-- Add Course Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/add_course_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Add Course"
+            app:layout_constraintTop_toBottomOf="@id/courses_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-            <Button
-                android:id="@+id/addCourseButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Add Course" />
-
-            <!--Courses-->
-
+        <!-- Courses RecyclerView -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/courses_rv"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@android:drawable/edit_text" />
+            app:layout_constraintTop_toBottomOf="@id/add_course_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <View
-                android:layout_width="match_parent"
-                android:layout_height="25dp" />
+        <!-- Notifications Label -->
+        <TextView
+            android:id="@+id/notifications_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Notifications"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            app:layout_constraintTop_toBottomOf="@id/courses_rv"
+            app:layout_constraintStart_toStartOf="parent" />
 
-            <TextView
-                android:id="@+id/notifications_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:background="@null"
-                android:text="Notifications"
-                android:textColor="@color/blue"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+        <!-- Days to Notify -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/days_to_notify_input_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/notifications_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-            <!--Notifications-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:text="Days in advance to notify"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
-
-                <EditText
-                    android:id="@+id/daysToNotifyET"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:layout_gravity="end"
-                    android:layout_weight="0.1"
-                    android:hint="0"
-                    android:inputType="number" />
-
-            </LinearLayout>
-
-            <androidx.appcompat.widget.SwitchCompat
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/days_to_notify_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fitsSystemWindows="true"
-                android:text="Remove assignment after due date" />
+                android:hint="Days in advance to notify"
+                android:inputType="number"
+                android:imeOptions="actionDone"
+                android:cursorVisible="false"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        </LinearLayout>
+        <!-- Switch for Assignment Removal -->
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/remove_assignment_switch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Remove assignment after due date"
+            app:layout_constraintTop_toBottomOf="@id/days_to_notify_input_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
-

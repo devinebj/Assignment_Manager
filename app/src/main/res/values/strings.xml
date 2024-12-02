@@ -4,10 +4,10 @@
     <!-- Navigation Bar Strings -->
     <string name="title_home">Home</string>
     <string name="title_notifications">Notifications</string>
-    <string name="title_add">Add Class</string>
+    <string name="title_add">Add Assignment</string>
     <string name="title_settings">Settings</string>
 
-    <!-- Add class strings -->
+    <!-- Add assignment strings -->
     <string name="add_class"><b><u>Class</u></b></string>
     <string name="assignment_name"><b><u>Assignment Name</u></b></string>
     <string name="due_date"><b><u>Due Date</u></b></string>

@@ -1,18 +1,18 @@
-package com.example.myapplication.fragments.ViewModels;
+package com.example.myapplication;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingsData {
-    private static SettingsData instance = null;
+public class Data {
+    private static Data instance = null;
     private static final List<IObserver> I_OBSERVERS = new ArrayList<>();
     private static List<Course> courses = new ArrayList<>();
 
-    private SettingsData() {}
+    private Data() {}
 
-    public static synchronized SettingsData getInstance() {
+    public static synchronized Data getInstance() {
         if (instance == null) {
-            instance = new SettingsData();
+            instance = new Data();
         }
 
         return instance;

@@ -1,4 +1,4 @@
-package com.example.myapplication.fragments;
+package com.example.myapplication;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,19 +18,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication.fragments.ViewModels.Course;
-import com.example.myapplication.R;
-import com.example.myapplication.fragments.ViewModels.SettingsData;
-
 import java.util.List;
 
-public class SettingsFragment extends Fragment implements SettingsData.IObserver {
+public class SettingsFragment extends Fragment implements Data.IObserver {
     Button addClassButton;
     EditText daysToNotifyET;
     CourseAdapter courseAdapter;
     RecyclerView coursesRecyclerView;
     View rootView;
-    SettingsData settingsData;
+    Data data;
     List<Course> courses;
 
     @Nullable
@@ -38,9 +34,9 @@ public class SettingsFragment extends Fragment implements SettingsData.IObserver
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.settings_fragment, container, false);
 
-        settingsData = SettingsData.getInstance();
-        settingsData.registerObserver(this);
-        courses = settingsData.getCourses();
+        data = Data.getInstance();
+        data.registerObserver(this);
+        courses = data.getCourses();
 
         initializeViews();
         setupAddClassButton(inflater);
@@ -51,8 +47,8 @@ public class SettingsFragment extends Fragment implements SettingsData.IObserver
     }
 
     private void initializeViews(){
-        addClassButton = rootView.findViewById(R.id.addCourseButton);
-        daysToNotifyET = rootView.findViewById(R.id.daysToNotifyET);
+        addClassButton = rootView.findViewById(R.id.add_course_button);
+        daysToNotifyET = rootView.findViewById(R.id.days_to_notify_et);
         coursesRecyclerView = rootView.findViewById(R.id.courses_rv);
     }
 
@@ -111,8 +107,8 @@ public class SettingsFragment extends Fragment implements SettingsData.IObserver
         if(textInput.isEmpty()){
             showToast("Class name cannot be empty!");
         } else {
-            settingsData.getCourses().add(new Course(textInput));
-            settingsData.notifyRecyclerDataChanged();
+            data.getCourses().add(new Course(textInput));
+            data.notifyRecyclerDataChanged();
             popupWindow.dismiss();
         }
     }
@@ -132,9 +128,11 @@ public class SettingsFragment extends Fragment implements SettingsData.IObserver
 
         try {
             int number = Integer.parseInt(input);
-
             if(number > MAX_NUMBER){
                 showToast("This number is too large! Max number is " + MAX_NUMBER);
+            } else {
+                daysToNotifyET.clearFocus();
+                rootView.requestFocus();
             }
         } catch (NumberFormatException e){
             showToast("Invalid number!");

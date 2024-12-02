@@ -1,4 +1,4 @@
-package com.example.myapplication.fragments.ViewModels;
+package com.example.myapplication;
 
 public class Course {
     private String name;

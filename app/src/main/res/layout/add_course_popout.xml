@@ -8,49 +8,60 @@
     android:background="@color/popup_background"
     android:clickable="true">
 
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical"
-        android:padding="15dp"
+        android:layout_gravity="center"
+        android:backgroundTint="@color/white"
+        android:elevation="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp">
 
-        <TextView
-            android:id="@+id/popup_TextView"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="10dp"
-            android:text="Enter class"
-            android:textColor="@color/blue"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            android:layout_gravity="center"/>
+            android:orientation="vertical"
+            android:padding="20dp">
 
-        <EditText
-            android:id="@+id/popup_EditText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:drawable/edit_text"
-            android:hint="Class name"
-            android:inputType="text"
-            android:paddingTop="10dp"
-            android:paddingRight="100dp"
-            android:paddingBottom="10dp" />
+            <!-- Popup Title -->
+            <TextView
+                android:id="@+id/popup_TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:text="Enter Course Name"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:textColor="@color/blue"
+                android:gravity="center_horizontal" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp" />
+            <!-- Input Field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Course name">
 
-        <Button
-            android:id="@+id/popup_Button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Add course" />
-    </LinearLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/popup_EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Add Course Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/popup_Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/blue"
+                android:text="Add Course"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
