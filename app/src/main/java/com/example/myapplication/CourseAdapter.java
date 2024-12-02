@@ -13,18 +13,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseViewHolder> implements Data.IObserver {
+public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseViewHolder> {
     private List<Course> courses;
     private Context context;
-    private OnCourseClickListener listener;
 
     // Constructor
-    public CourseAdapter(Context context, List<Course> courses, OnCourseClickListener listener) {
+    public CourseAdapter(Context context, List<Course> courses) {
         this.context = context;
         this.courses = courses;
-        this.listener = listener;
 
-        Data.getInstance().registerObserver(this);
     }
 
     @NonNull
@@ -46,7 +43,6 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
                 }
             });
 
-            holder.itemView.setOnClickListener(v -> listener.onCourseClick(course));
         } else {
             Log.e("CourseAdapter", "Invalid position in onBindViewHolder" + position);
         }
@@ -64,29 +60,15 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
     }
 
     public void removeItem(int position){
-        if (position >= 0 && position < courses.size()) {
+        if(position >= 0 && position < courses.size()){
+            Course courseToRemove = courses.get(position);
+            Data.getInstance().removeCourse(courseToRemove);
+
             courses.remove(position);
             notifyItemRemoved(position);
-
-            List<Course> sharedCourses = Data.getInstance().getCourses();
-            if(position < sharedCourses.size()) {
-                sharedCourses.remove(position);
-                Data.getInstance().notifyRecyclerDataChanged();
-            }
-        } else{
-            Log.e("CourseAdapter", "Invalid position: " + position + ", List size: " + courses.size());
+        } else {
+            Log.e("CourseAdapter", "Invalid position: " + position + ", List Size: " + courses.size());
         }
-    }
-
-    @Override
-    public void onRecyclerDataChanged(List<Course> courses) {
-        updateData(courses);
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-        Data.getInstance().unregisterObserver(this);
     }
 
     public static class CourseViewHolder extends RecyclerView.ViewHolder {
@@ -98,9 +80,5 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
             courseName = itemView.findViewById(R.id.course_cell_tv);
             deleteButton = itemView.findViewById(R.id.course_cell_button);
         }
-    }
-
-    public interface OnCourseClickListener {
-        void onCourseClick(Course course);
     }
 }

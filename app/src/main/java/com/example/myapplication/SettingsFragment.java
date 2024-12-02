@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class SettingsFragment extends Fragment implements Data.IObserver {
+public class SettingsFragment extends Fragment {
     Button addClassButton;
     EditText daysToNotifyET;
     CourseAdapter courseAdapter;
@@ -34,8 +34,7 @@ public class SettingsFragment extends Fragment implements Data.IObserver {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.settings_fragment, container, false);
 
-        data = Data.getInstance();
-        data.registerObserver(this);
+        data = Data.getInstance(requireContext());
         courses = data.getCourses();
 
         initializeViews();
@@ -53,10 +52,12 @@ public class SettingsFragment extends Fragment implements Data.IObserver {
     }
 
     private void setupRecyclerView() {
+        courseAdapter = new CourseAdapter(requireContext(), courses);
 
-        courseAdapter = new CourseAdapter(requireContext(), courses, this::onCourseSelected);
         coursesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         coursesRecyclerView.setAdapter(courseAdapter);
+
+        courseAdapter.updateData(courses);
     }
 
     private void onCourseSelected(Course course){}
@@ -107,8 +108,8 @@ public class SettingsFragment extends Fragment implements Data.IObserver {
         if(textInput.isEmpty()){
             showToast("Class name cannot be empty!");
         } else {
-            data.getCourses().add(new Course(textInput));
-            data.notifyRecyclerDataChanged();
+            data.addCourse(new Course(textInput));
+            courseAdapter.updateData(courses);
             popupWindow.dismiss();
         }
     }
@@ -153,9 +154,5 @@ public class SettingsFragment extends Fragment implements Data.IObserver {
 
     private void showToast(String message){
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onRecyclerDataChanged(List<Course> courses) {
     }
 }

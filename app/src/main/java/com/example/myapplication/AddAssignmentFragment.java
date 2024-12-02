@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class AddAssignmentFragment extends Fragment  implements Data.IObserver {
+public class AddAssignmentFragment extends Fragment {
     private Spinner courseSpinner;
     private EditText dueDateEditText;
     private ArrayAdapter<String> spinnerAdapter;
@@ -30,7 +30,6 @@ public class AddAssignmentFragment extends Fragment  implements Data.IObserver {
         courseSpinner = rootView.findViewById(R.id.courses_spinner);
         setupSpinner();
 
-        Data.getInstance().registerObserver(this);
         updateSpinner(Data.getInstance().getCourses());
 
         dueDateEditText = rootView.findViewById(R.id.due_date_et);
@@ -42,7 +41,6 @@ public class AddAssignmentFragment extends Fragment  implements Data.IObserver {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Data.getInstance().unregisterObserver(this);
     }
 
     private void setupSpinner() {
@@ -76,10 +74,5 @@ public class AddAssignmentFragment extends Fragment  implements Data.IObserver {
                 }, year, month, day);
             datePickerDialog.show();
         });
-    }
-
-    @Override
-    public void onRecyclerDataChanged(List<Course> courses){
-        updateSpinner(courses);
     }
 }
