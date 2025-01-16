@@ -35,7 +35,7 @@
                 android:paddingBottom="10dp"
                 android:text="Enter Course Name"
                 android:textAppearance="?attr/textAppearanceHeadline6"
-                android:textColor="@color/blue"
+                android:textColor="@color/purple"
                 android:gravity="center_horizontal" />
 
             <!-- Input Field -->
@@ -57,7 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:backgroundTint="@color/blue"
+                android:backgroundTint="@color/purple"
                 android:text="Add Course"
                 android:textColor="@color/white" />
         </LinearLayout>

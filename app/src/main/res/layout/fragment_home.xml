@@ -20,7 +20,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <CalendarView
-            android:id="@+id/calendarView"
+            android:id="@+id/due_date_cv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/calendar_label"
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:text="Assignments"
             android:textAppearance="?attr/textAppearanceHeadline6"
-            app:layout_constraintTop_toBottomOf="@id/calendarView"
+            app:layout_constraintTop_toBottomOf="@id/due_date_cv"
             app:layout_constraintStart_toStartOf="parent"
             android:paddingTop="16dp" />
 

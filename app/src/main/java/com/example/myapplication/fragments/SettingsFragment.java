@@ -1,7 +1,8 @@
-package com.example.myapplication;
+package com.example.myapplication.fragments;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplication.models.Course;
+import com.example.myapplication.adapters.CourseAdapter;
+import com.example.myapplication.managers.CourseManager;
+import com.example.myapplication.R;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class SettingsFragment extends Fragment {
@@ -26,16 +33,16 @@ public class SettingsFragment extends Fragment {
     CourseAdapter courseAdapter;
     RecyclerView coursesRecyclerView;
     View rootView;
-    Data data;
+    CourseManager courseManager;
     List<Course> courses;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.settings_fragment, container, false);
+        rootView = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        data = Data.getInstance(requireContext());
-        courses = data.getCourses();
+        courseManager = CourseManager.getInstance(requireContext());
+        courses = courseManager.getCourses();
 
         initializeViews();
         setupAddClassButton(inflater);
@@ -45,6 +52,14 @@ public class SettingsFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        courses = courseManager.getCourses();
+        courseAdapter.updateData(courses);
+    }
+
     private void initializeViews(){
         addClassButton = rootView.findViewById(R.id.add_course_button);
         daysToNotifyET = rootView.findViewById(R.id.days_to_notify_et);
@@ -52,15 +67,16 @@ public class SettingsFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        courseAdapter = new CourseAdapter(requireContext(), courses);
+        if(courses == null) {
+            courses = new ArrayList<>();
+        }
 
+        courseAdapter = new CourseAdapter(requireContext(), courses);
         coursesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         coursesRecyclerView.setAdapter(courseAdapter);
 
-        courseAdapter.updateData(courses);
+        courseAdapter.updateData(courseManager.getCourses());
     }
-
-    private void onCourseSelected(Course course){}
 
     private void setupAddClassButton(LayoutInflater inflater){
         addClassButton.setOnClickListener(v -> {
@@ -72,10 +88,11 @@ public class SettingsFragment extends Fragment {
         });
     }
 
-    private View createPopUpView(LayoutInflater inflater){
-        return inflater.inflate(R.layout.add_course_popout, null);
+    private View createPopUpView(@NonNull LayoutInflater inflater){
+        return inflater.inflate(R.layout.popout_add_course, (ViewGroup) rootView, false);
     }
 
+    @NonNull
     private PopupWindow createPopupWindow(View popupView){
         PopupWindow popupWindow = new PopupWindow(
                 popupView,
@@ -91,24 +108,25 @@ public class SettingsFragment extends Fragment {
         return popupWindow;
     }
 
-    private void setupPopupDismissListener(PopupWindow popupWindow) {
+    private void setupPopupDismissListener(@NonNull PopupWindow popupWindow) {
         popupWindow.setOnDismissListener(this::restoreBackground);
     }
 
-    private void setupPopupButton(View popupView, PopupWindow popupWindow){
+    private void setupPopupButton(@NonNull View popupView, PopupWindow popupWindow){
         Button popupButton = popupView.findViewById(R.id.popup_Button);
         EditText popupEditText = popupView.findViewById(R.id.popup_EditText);
 
         popupButton.setOnClickListener(v -> handlePopUpButtonClick(popupEditText, popupWindow));
     }
 
-    private void handlePopUpButtonClick(EditText popupEditText, PopupWindow popupWindow){
+    private void handlePopUpButtonClick(@NonNull EditText popupEditText, PopupWindow popupWindow){
         String textInput = popupEditText.getText().toString().trim();
 
         if(textInput.isEmpty()){
             showToast("Class name cannot be empty!");
         } else {
-            data.addCourse(new Course(textInput));
+            courseManager.addCourse(new Course(textInput));
+            courses = courseManager.getCourses();
             courseAdapter.updateData(courses);
             popupWindow.dismiss();
         }
@@ -129,12 +147,16 @@ public class SettingsFragment extends Fragment {
 
         try {
             int number = Integer.parseInt(input);
+
             if(number > MAX_NUMBER){
                 showToast("This number is too large! Max number is " + MAX_NUMBER);
+                daysToNotifyET.setText(String.valueOf(MAX_NUMBER));
+                daysToNotifyET.setSelection(String.valueOf(MAX_NUMBER).length());
             } else {
                 daysToNotifyET.clearFocus();
                 rootView.requestFocus();
             }
+
         } catch (NumberFormatException e){
             showToast("Invalid number!");
         }

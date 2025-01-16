@@ -1,30 +1,35 @@
-package com.example.myapplication;
+package com.example.myapplication.managers;
 
 import android.content.Context;
 
+import com.example.myapplication.models.Course;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.FileHandler;
 
-public class Data {
-    private static Data instance = null;
-    private static Context context;
+public class CourseManager {
+    private static CourseManager instance = null;
+    private static final String FILE_NAME = "courses.json";
     private List<Course> courses;
+    private static Context context;
 
-    private Data(Context context) {
+    private CourseManager(Context context) {
         this.context = context.getApplicationContext();
-        this.courses = FileManager.loadCoursesFromFile(this.context);
+        Type listType = new TypeToken<List<Course>>() {}.getType();
+        this.courses = FileManager.loadFromFile(this.context, FILE_NAME, listType);
     }
 
-    public static synchronized Data getInstance(Context context){
+    public static synchronized CourseManager getInstance(Context context){
         if(instance == null) {
-            instance = new Data(context);
+            instance = new CourseManager(context);
         }
 
         return instance;
     }
 
-    public static synchronized Data getInstance() {
+    public static synchronized CourseManager getInstance() {
         if (instance == null) {
             throw new IllegalStateException("Data not initialized. Call getInstance(Context context) first");
         }
@@ -33,7 +38,7 @@ public class Data {
     }
 
     public List<Course> getCourses() {
-        return FileManager.loadCoursesFromFile(context);
+        return new ArrayList<>(courses);
     }
 
     public void addCourse(Course course){
@@ -51,6 +56,6 @@ public class Data {
     }
 
     public void saveCourses(){
-        FileManager.saveCoursesToFile(context, courses);
+        FileManager.saveToFile(context, FILE_NAME, courses);
     }
 }
