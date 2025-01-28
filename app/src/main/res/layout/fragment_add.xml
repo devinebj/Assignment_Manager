@@ -4,49 +4,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="16dp">
 
         <!-- Course Label -->
         <TextView
             android:id="@+id/course_tv"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Course"
-            android:textAppearance="?attr/textAppearanceHeadline6"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textAppearance="?attr/textAppearanceHeadline6" />
 
         <!-- Course Spinner -->
         <Spinner
             android:id="@+id/courses_spinner"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:spinnerMode="dropdown"
-            app:layout_constraintTop_toBottomOf="@id/course_tv"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:spinnerMode="dropdown" />
 
         <!-- Assignment Name Label -->
         <TextView
             android:id="@+id/assignment_name_tv"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Assignment Name"
-            android:textAppearance="?attr/textAppearanceHeadline6"
-            app:layout_constraintTop_toBottomOf="@id/courses_spinner"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:textAppearance="?attr/textAppearanceHeadline6" />
 
         <!-- Assignment Name Input -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/assignment_name_input_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/assignment_name_tv"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/assignment_name_et"
@@ -55,24 +46,41 @@
                 android:hint="Enter assignment name" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Points Possible Label -->
+        <TextView
+            android:id="@+id/points_possible_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Points Possible"
+            android:textAppearance="?attr/textAppearanceHeadline6" />
+
+        <!-- Points Possible Input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/points_possible_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/points_possible_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter points possible"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <!-- Grade Weight Label -->
         <TextView
             android:id="@+id/grade_weight_tv"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Grade Weight"
-            android:textAppearance="?attr/textAppearanceHeadline6"
-            app:layout_constraintTop_toBottomOf="@id/assignment_name_input_layout"
-            app:layout_constraintStart_toStartOf="parent"/>
+            android:textAppearance="?attr/textAppearanceHeadline6" />
 
         <!-- Grade Weight Input -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/grade_weight_input_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/grade_weight_tv"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/grade_weight_et"
@@ -85,21 +93,16 @@
         <!-- Due Date Label -->
         <TextView
             android:id="@+id/due_date_tv"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Due Date"
-            android:textAppearance="?attr/textAppearanceHeadline6"
-            app:layout_constraintTop_toBottomOf="@id/grade_weight_input_layout"
-            app:layout_constraintStart_toStartOf="parent"/>
+            android:textAppearance="?attr/textAppearanceHeadline6" />
 
         <!-- Due Date Input -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/due_date_input_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/due_date_tv"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/due_date_et"
@@ -116,10 +119,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add Assignment"
-            app:layout_constraintTop_toBottomOf="@id/due_date_input_layout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            android:layout_gravity="center_horizontal"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 </ScrollView>

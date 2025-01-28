@@ -1,6 +1,7 @@
 package com.example.myapplication.fragments;
 
 import android.app.DatePickerDialog;
+import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,11 +25,14 @@ import com.example.myapplication.R;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Date;
+import java.util.Locale;
 
 public class AddAssignmentFragment extends Fragment {
     private View rootView;
     private Spinner courseSpinner;
     private EditText assignmentNameEditText;
+    private EditText pointsPossibleEditText;
     private EditText gradeWeightEditText;
     private EditText dueDateEditText;
     private Button addAssignmentButton;
@@ -61,6 +65,7 @@ public class AddAssignmentFragment extends Fragment {
     private void initializeViews(){
         addAssignmentButton = rootView.findViewById(R.id.add_assignment_button);
         assignmentNameEditText = rootView.findViewById(R.id.assignment_name_et);
+        pointsPossibleEditText = rootView.findViewById(R.id.points_possible_et);
         gradeWeightEditText = rootView.findViewById(R.id.grade_weight_et);
         courseSpinner = rootView.findViewById(R.id.courses_spinner);
         dueDateEditText = rootView.findViewById(R.id.due_date_et);
@@ -98,8 +103,9 @@ public class AddAssignmentFragment extends Fragment {
 
             String course = courseSpinner.getSelectedItem().toString();
             String assignmentName = assignmentNameEditText.getText().toString();
-            int gradeWeight = gradeWeightEditText.getText().toString().isEmpty() ? 0 : Integer.parseInt(gradeWeightEditText.getText().toString());
-            String dueDate = dueDateEditText.getText().toString();
+            String pointsPossibleString = pointsPossibleEditText.getText().toString();
+            String gradeWeightString = gradeWeightEditText.getText().toString();
+            String dueDateString = dueDateEditText.getText().toString();
 
             if(course.isEmpty()) {
                 showToast("Course cannot be empty!");
@@ -111,20 +117,49 @@ public class AddAssignmentFragment extends Fragment {
                 return;
             }
 
-            if(dueDate.isEmpty()) {
+            if(dueDateString.isEmpty()) {
                 showToast("Due Date cannot be empty!");
+                return;
+            }
+
+            int gradeWeight = gradeWeightString.isEmpty() ? 0 : Integer.parseInt(gradeWeightString);
+            int pointsPossible = pointsPossibleString.isEmpty() ? 0 : Integer.parseInt(pointsPossibleString);
+
+            Date dueDate = parseDateString(dueDateString);
+            if(dueDate == null){
+                showToast("Invalid date format: Please use MM/dd/yyyy.");
                 return;
             }
 
             Assignment assignment = new Assignment(
                 course,
                 assignmentName,
+                pointsPossible,
                 gradeWeight,
                 dueDate
             );
 
             AssignmentManager.getInstance(requireContext()).addAssignment(assignment);
+            showToast("Assignment successfully added!");
+
+            clearInputs();
         });
+    }
+
+    private Date parseDateString(String dateString){
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+        try {
+            return sdf.parse(dateString);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private void clearInputs(){
+        assignmentNameEditText.setText("");
+        gradeWeightEditText.setText("");
+        pointsPossibleEditText.setText("");
+        dueDateEditText.setText("");
     }
 
     private void updateSpinner(List<Course> courses){

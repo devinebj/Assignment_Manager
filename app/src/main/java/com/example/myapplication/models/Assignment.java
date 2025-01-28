@@ -1,14 +1,18 @@
 package com.example.myapplication.models;
 
+import java.util.Date;
+
 public class Assignment {
     private String course;
     private String assignmentName;
+    private int pointsPossible;
     private int gradeWeight;
-    private String dueDate;
+    private Date dueDate;
 
-    public Assignment(String course, String assignmentName, int gradeWeight, String dueDate){
+    public Assignment(String course, String assignmentName, int pointsPossible, int gradeWeight, Date dueDate){
         this.course = course;
         this.assignmentName = assignmentName;
+        this.pointsPossible = pointsPossible;
         this.gradeWeight = gradeWeight;
         this.dueDate = dueDate;
     }
@@ -29,6 +33,10 @@ public class Assignment {
         this.assignmentName = assignmentName;
     }
 
+    public int getPointsPossible() { return pointsPossible; }
+
+    public void setPointsPossible(int pointsPossible) { this.pointsPossible = pointsPossible; }
+
     public int getGradeWeight() {
         return gradeWeight;
     }
@@ -37,11 +45,11 @@ public class Assignment {
         this.gradeWeight = gradeWeight;
     }
 
-    public String getDueDate() {
+    public Date getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(String dueDate) {
+    public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
     }
 }

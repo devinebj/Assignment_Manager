@@ -8,6 +8,8 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
+import java.util.stream.Collectors;
 
 public class AssignmentManager {
     private static AssignmentManager instance = null;
@@ -53,6 +55,20 @@ public class AssignmentManager {
             assignments.remove(assignment);
             saveAssignments();
         }
+    }
+
+    public List<Assignment> getUpcomingAssignments() {
+        Date now = new Date();
+        return assignments.stream()
+                .filter(assignment -> assignment.getDueDate().after(now))
+                .collect(Collectors.toList());
+    }
+
+    public List<Assignment> getPastDueAssignments() {
+        Date now = new Date();
+        return assignments.stream()
+                .filter(assignment -> assignment.getDueDate().before(now))
+                .collect(Collectors.toList());
     }
 
     public void saveAssignments(){

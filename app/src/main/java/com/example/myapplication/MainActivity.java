@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.example.myapplication.fragments.AddAssignmentFragment;
 import com.example.myapplication.fragments.HomeFragment;
+import com.example.myapplication.fragments.NotificationFragment;
 import com.example.myapplication.fragments.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -26,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
             switch(item.getItemId()){
                 case R.id.miHome:
                     selectedFragment = new HomeFragment();
+                    break;
+                case R.id.miNotification:
+                    selectedFragment = new NotificationFragment();
                     break;
                 case R.id.miAdd:
                     selectedFragment = new AddAssignmentFragment();
