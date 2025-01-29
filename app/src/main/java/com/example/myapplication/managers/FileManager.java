@@ -3,6 +3,9 @@ package com.example.myapplication.managers;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.myapplication.models.AppSettings;
+import com.example.myapplication.models.Assignment;
+import com.example.myapplication.models.Course;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -16,9 +19,9 @@ import java.util.List;
 public class FileManager {
     private static final String TAG = "FileManager";
 
-    public static <T> void saveToFile(Context context, String fileName, List<T> data){
+    public static <T> void saveToFile(Context context, String fileName, AppSettings appSettings){
         Gson gson = new Gson();
-        String json = gson.toJson(data);
+        String json = gson.toJson(appSettings);
 
         try(FileWriter writer = new FileWriter(new File(context.getFilesDir(), fileName))) {
             writer.write(json);
@@ -27,20 +30,20 @@ public class FileManager {
         }
     }
 
-    public static <T> List<T> loadFromFile(Context context, String fileName, Type typeOfT){
+    public static AppSettings loadFromFile(Context context, String fileName, Type typeOfT){
         File file = new File(context.getFilesDir(), fileName);
 
         if(!file.exists()) {
             Log.d(TAG,"File " + fileName + "does not exist, returning empty list.");
-            return new ArrayList<>();
+            return new AppSettings();
         }
 
         try(FileReader reader = new FileReader(file)){
-            List<T> data = new Gson().fromJson(reader, typeOfT);
-            return data != null ? data : new ArrayList<>();
+            AppSettings data = new Gson().fromJson(reader, typeOfT);
+            return data != null ? data : new AppSettings();
         } catch (IOException e){
             e.printStackTrace();
-            return new ArrayList<>();
+            return new AppSettings();
         }
     }
 }
