@@ -20,7 +20,6 @@ public class Assignment {
     public String getCourse() {
         return course;
     }
-
     public void setCourse(String course) {
         this.course = course;
     }
@@ -28,19 +27,16 @@ public class Assignment {
     public String getName() {
         return assignmentName;
     }
-
     public void setName(String assignmentName) {
         this.assignmentName = assignmentName;
     }
 
     public int getPointsPossible() { return pointsPossible; }
-
     public void setPointsPossible(int pointsPossible) { this.pointsPossible = pointsPossible; }
 
     public int getGradeWeight() {
         return gradeWeight;
     }
-
     public void setGradeWeight(int gradeWeight) {
         this.gradeWeight = gradeWeight;
     }
@@ -48,7 +44,6 @@ public class Assignment {
     public Date getDueDate() {
         return dueDate;
     }
-
     public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
     }

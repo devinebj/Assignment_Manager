@@ -9,9 +9,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.adapters.NotificationAdapter;
 import com.example.myapplication.managers.AssignmentManager;
 import com.example.myapplication.models.Assignment;
 
@@ -47,17 +49,19 @@ public class NotificationFragment extends Fragment {
         List<Assignment> upcomingAssignments = assignmentManager.getUpcomingAssignments();
         List<Assignment> pastDueAssignments = assignmentManager.getPastDueAssignments();
 
-        togglePlaceholderVisibility(upcomingRecyclerView, upcomingEmptyPlaceHolder, upcomingAssignments);
-        togglePlaceholderVisibility(pastDueRecyclerView, pastDueEmptyPlaceHolder, pastDueAssignments);
+        setupRecyclerView(upcomingRecyclerView, upcomingEmptyPlaceHolder, upcomingAssignments);
+        setupRecyclerView(pastDueRecyclerView, pastDueEmptyPlaceHolder, pastDueAssignments);
     }
 
-    private void togglePlaceholderVisibility(RecyclerView recyclerView, TextView placeholder, List<Assignment> assignments) {
-        if (assignments.isEmpty()) {
+    private void setupRecyclerView(RecyclerView recyclerView, TextView placeHolder, List<Assignment> assignments){
+        if(assignments.isEmpty()){
             recyclerView.setVisibility(View.GONE);
-            placeholder.setVisibility(View.VISIBLE);
+            placeHolder.setVisibility(View.VISIBLE);
         } else {
+            placeHolder.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
-            placeholder.setVisibility(View.GONE);
+            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+            recyclerView.setAdapter(new NotificationAdapter(requireContext(), assignments));
         }
     }
 }
