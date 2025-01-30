@@ -1,5 +1,7 @@
 package com.example.myapplication.managers;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
 import android.content.Context;
 
 import com.example.myapplication.models.Course;
@@ -18,7 +20,7 @@ public class CourseManager {
     private CourseManager(Context context) {
         this.context = context.getApplicationContext();
         Type listType = new TypeToken<List<Course>>() {}.getType();
-        this.courses = FileManager.loadFromFile(this.context, FILE_NAME, listType);
+        this.courses = SettingsManager.loadSettings(requireContext()).getCourses();
     }
 
     public static synchronized CourseManager getInstance(Context context){
@@ -56,6 +58,6 @@ public class CourseManager {
     }
 
     public void saveCourses(){
-        FileManager.saveToFile(context, FILE_NAME, courses);
+        SettingsManager
     }
 }

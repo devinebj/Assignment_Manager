@@ -1,6 +1,7 @@
 package com.example.myapplication.fragments;
 
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,6 +19,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplication.managers.SettingsManager;
+import com.example.myapplication.models.AppSettings;
 import com.example.myapplication.models.Course;
 import com.example.myapplication.adapters.CourseAdapter;
 import com.example.myapplication.managers.CourseManager;
@@ -34,6 +37,7 @@ public class SettingsFragment extends Fragment {
     View rootView;
     CourseManager courseManager;
     List<Course> courses;
+    SettingsManager settingsManager;
 
     @Nullable
     @Override
@@ -54,8 +58,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-
-        courses = courseManager.getCourses();
+        courses = settingsManager.loadCourses();
         courseAdapter.updateData(courses);
     }
 
@@ -63,32 +66,23 @@ public class SettingsFragment extends Fragment {
         addClassButton = rootView.findViewById(R.id.add_course_button);
         daysToNotifyET = rootView.findViewById(R.id.days_to_notify_et);
         coursesRecyclerView = rootView.findViewById(R.id.courses_rv);
+        daysToNotifyET.setText(String.valueOf(settingsManager.loadDaysToNotify()));
     }
 
     private void setupRecyclerView() {
-        if(courses == null) {
-            courses = new ArrayList<>();
-        }
-
         courseAdapter = new CourseAdapter(requireContext(), courses);
         coursesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         coursesRecyclerView.setAdapter(courseAdapter);
-
-        courseAdapter.updateData(courseManager.getCourses());
     }
 
     private void setupAddClassButton(LayoutInflater inflater){
         addClassButton.setOnClickListener(v -> {
-            View popupView = createPopUpView(inflater);
+            View popupView = inflater.inflate(R.layout.popout_add_course, (ViewGroup) rootView, false);
             PopupWindow popupWindow = createPopupWindow(popupView);
 
             setupPopupDismissListener(popupWindow);
             setupPopupButton(popupView, popupWindow);
         });
-    }
-
-    private View createPopUpView(@NonNull LayoutInflater inflater){
-        return inflater.inflate(R.layout.popout_add_course, (ViewGroup) rootView, false);
     }
 
     @NonNull
@@ -115,24 +109,27 @@ public class SettingsFragment extends Fragment {
         Button popupButton = popupView.findViewById(R.id.popup_Button);
         EditText popupEditText = popupView.findViewById(R.id.popup_EditText);
 
-        popupButton.setOnClickListener(v -> handlePopUpButtonClick(popupEditText, popupWindow));
-    }
+        popupButton.setOnClickListener(v -> {
+            String textInput = popupEditText.getText().toString().trim();
 
-    private void handlePopUpButtonClick(@NonNull EditText popupEditText, PopupWindow popupWindow){
-        String textInput = popupEditText.getText().toString().trim();
-
-        if(textInput.isEmpty()){
-            showToast("Class name cannot be empty!");
-        } else {
-            courseManager.addCourse(new Course(textInput));
-            courses = courseManager.getCourses();
-            courseAdapter.updateData(courses);
-            popupWindow.dismiss();
-        }
+            if (textInput.isEmpty()){
+                showToast("Class name cannot be empty!");
+            } else {
+                Course newCourse = new Course(textInput);
+                courses.add(newCourse);
+                settingsManager.saveCourses(courses);
+                courseAdapter.updateData(courses);
+                popupWindow.dismiss();
+            }
+        });
     }
 
     private void setupDaysToNotifyEditText() {
-        daysToNotifyET.setOnClickListener(v -> validateDaysToNotify());
+        daysToNotifyET.setOnFocusChangeListener((v, hasFocus) -> {
+            if(!hasFocus) {
+                validateDaysToNotify();
+            }
+        });
     }
 
     private void validateDaysToNotify(){

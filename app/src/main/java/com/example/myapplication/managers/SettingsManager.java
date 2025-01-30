@@ -10,17 +10,50 @@ import java.util.List;
 
 public class SettingsManager {
     private static final String FILE_NAME = "app_settings.json";
+    private static SettingsManager instance;
+    private AppSettings appSettings;
+    private Context context;
 
-    public static void saveSettings(Context context, int daysToNotify){
-        List<Assignment> assignments = AssignmentManager.getInstance(context).getAssignments();
-        List<Course> courses = CourseManager.getInstance(context).getCourses();
+    private SettingsManager(Context context) {
+        appSettings = FileManager.loadFromFile(context, FILE_NAME, AppSettings.class);
+    }
 
-        AppSettings appSettings = new AppSettings(assignments, courses, daysToNotify);
+    public static synchronized SettingsManager getInstance(Context context) {
+        if(instance == null) {
+            instance = new SettingsManager(context);
+        }
 
+        return instance;
+    }
+
+    private void saveSettings(){
         FileManager.saveToFile(context, FILE_NAME, appSettings);
     }
 
-    public static void loadSettings(Context context){
-        AppSettings settings = FileManager.loadFromFile(context, FILE_NAME, AppSettings.class);
+    public int loadDaysToNotify() {
+        return appSettings.getDaysToNotify();
+    }
+
+    public void saveDaysToNotify(int days) {
+        appSettings.setDaysToNotify(days);
+        saveSettings();
+    }
+
+    public List<Course> loadCourses(){
+        return appSettings.getCourses();
+    }
+
+    public void saveCourses(List<Course> courses){
+        appSettings.setCourses(courses);
+        saveSettings();
+    }
+
+    public List<Assignment> loadAssignments() {
+        return appSettings.getAssignments();
+    }
+
+    public void saveAssignments(List<Assignment> assignments){
+        appSettings.setAssignments(assignments);
+        saveSettings();
     }
 }

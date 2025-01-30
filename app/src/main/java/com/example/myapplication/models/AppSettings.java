@@ -20,27 +20,27 @@ public class AppSettings {
         this.daysToNotify = 7;
     }
 
-    public List<Assignment> setAssignments() {
+    public List<Assignment> getAssignments() {
         return assignments;
     }
 
-    public void getAssignments(List<Assignment> assignments){
+    public void setAssignments(List<Assignment> assignments){
         this.assignments = assignments;
     }
 
-    public List<Course> setCourses(){
-        return courses;
-    }
-
-    public void getCourses(List<Course> courses){
+    public void setCourses(List<Course> courses){
         this.courses = courses;
     }
 
-    public int setDaysToNotify() {
+    public List<Course> getCourses(){
+        return courses;
+    }
+
+    public int getDaysToNotify() {
         return daysToNotify;
     }
 
-    public void getDaysToNotify(int daysToNotify) {
+    public void setDaysToNotify(int daysToNotify) {
         this.daysToNotify = daysToNotify;
     }
 }
