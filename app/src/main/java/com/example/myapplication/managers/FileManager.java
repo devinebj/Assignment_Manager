@@ -18,31 +18,33 @@ import java.util.List;
 
 public class FileManager {
     private static final String TAG = "FileManager";
+    private static final String FILE_NAME = "app_settings.json";
 
-    public static <T> void saveToFile(Context context, String fileName, AppSettings appSettings){
+    public static <T> void saveToFile(Context context, AppSettings appSettings){
         Gson gson = new Gson();
         String json = gson.toJson(appSettings);
 
-        try(FileWriter writer = new FileWriter(new File(context.getFilesDir(), fileName))) {
+        try(FileWriter writer = new FileWriter(new File(context.getFilesDir(), FILE_NAME))) {
             writer.write(json);
+            Log.d(TAG, "Settings successfully saved.");
         } catch (IOException e){
-            e.printStackTrace();
+            Log.e(TAG, "Error saving settings: " + e.getMessage());
         }
     }
 
-    public static AppSettings loadFromFile(Context context, String fileName, Type typeOfT){
-        File file = new File(context.getFilesDir(), fileName);
+    public static AppSettings loadFromFile(Context context){
+        File file = new File(context.getFilesDir(), FILE_NAME);
 
         if(!file.exists()) {
-            Log.d(TAG,"File " + fileName + "does not exist, returning empty list.");
+            Log.d(TAG,"File does not exist, returning default settings.");
             return new AppSettings();
         }
 
         try(FileReader reader = new FileReader(file)){
-            AppSettings data = new Gson().fromJson(reader, typeOfT);
+            AppSettings data = new Gson().fromJson(reader, AppSettings.class);
             return data != null ? data : new AppSettings();
         } catch (IOException e){
-            e.printStackTrace();
+            Log.e(TAG, "Error loading settings: " + e.getMessage());
             return new AppSettings();
         }
     }

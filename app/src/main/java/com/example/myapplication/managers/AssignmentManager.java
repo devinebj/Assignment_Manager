@@ -13,14 +13,12 @@ import java.util.stream.Collectors;
 
 public class AssignmentManager {
     private static AssignmentManager instance = null;
-    private static final String FILE_NAME = "assignments.json";
     private List<Assignment> assignments;
     private static Context context;
 
     private AssignmentManager(Context context){
         this.context = context.getApplicationContext();
-        Type listType = new TypeToken<List<Assignment>>() {}.getType();
-        this.assignments = FileManager.loadFromFile(this.context, FILE_NAME, listType);
+        this.assignments = SettingsManager.getInstance(context).loadAssignments();
     }
 
     public static synchronized AssignmentManager getInstance(Context context){
@@ -72,6 +70,6 @@ public class AssignmentManager {
     }
 
     public void saveAssignments(){
-        FileManager.saveToFile(context, FILE_NAME, assignments);
+        SettingsManager.getInstance(context).saveAssignments(assignments);
     }
 }

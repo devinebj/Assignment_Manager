@@ -13,14 +13,12 @@ import java.util.List;
 
 public class CourseManager {
     private static CourseManager instance = null;
-    private static final String FILE_NAME = "courses.json";
     private List<Course> courses;
     private static Context context;
 
     private CourseManager(Context context) {
         this.context = context.getApplicationContext();
-        Type listType = new TypeToken<List<Course>>() {}.getType();
-        this.courses = SettingsManager.loadSettings(requireContext()).getCourses();
+        this.courses = SettingsManager.getInstance(context).loadCourses();
     }
 
     public static synchronized CourseManager getInstance(Context context){
@@ -40,7 +38,7 @@ public class CourseManager {
     }
 
     public List<Course> getCourses() {
-        return new ArrayList<>(courses);
+        return courses;
     }
 
     public void addCourse(Course course){
@@ -58,6 +56,6 @@ public class CourseManager {
     }
 
     public void saveCourses(){
-        SettingsManager
+        SettingsManager.getInstance(context).saveCourses(courses);
     }
 }

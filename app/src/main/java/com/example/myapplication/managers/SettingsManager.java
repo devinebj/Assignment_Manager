@@ -15,7 +15,8 @@ public class SettingsManager {
     private Context context;
 
     private SettingsManager(Context context) {
-        appSettings = FileManager.loadFromFile(context, FILE_NAME, AppSettings.class);
+        this.context = context.getApplicationContext();
+        this.appSettings = FileManager.loadFromFile(context);
     }
 
     public static synchronized SettingsManager getInstance(Context context) {
@@ -27,7 +28,7 @@ public class SettingsManager {
     }
 
     private void saveSettings(){
-        FileManager.saveToFile(context, FILE_NAME, appSettings);
+        FileManager.saveToFile(context, appSettings);
     }
 
     public int loadDaysToNotify() {
