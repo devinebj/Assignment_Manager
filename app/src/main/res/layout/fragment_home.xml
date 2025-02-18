@@ -1,50 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Weekly"
+        android:textColor="@color/blue"
+        android:background="@color/white"
+        android:textStyle="bold"
+        android:onClick="weeklyAction"
+        android:textSize="20sp"/>
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp">
 
-        <!-- Calendar View -->
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="<-"
+            android:textColor="@color/blue"
+            android:background="@null"
+            android:textStyle="bold"
+            android:onClick="previousMonthAction"
+            android:textSize="20sp"/>
+
         <TextView
-            android:id="@+id/calendar_label"
+            android:id="@+id/monthYearTV"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:text="Feb 2021"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:textColor="@color/black"/>
+
+        <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Calendar"
-            android:textAppearance="?attr/textAppearanceHeadline6"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_weight="1"
+            android:text="->"
+            android:textColor="@color/blue"
+            android:background="@null"
+            android:textStyle="bold"
+            android:onClick="nextMonthAction"
+            android:textSize="20sp"/>
 
-        <CalendarView
-            android:id="@+id/due_date_cv"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/calendar_label"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+    </LinearLayout>
 
-        <!-- Assignments Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
         <TextView
-            android:id="@+id/assignments_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Assignments"
-            android:textAppearance="?attr/textAppearanceHeadline6"
-            app:layout_constraintTop_toBottomOf="@id/due_date_cv"
-            app:layout_constraintStart_toStartOf="parent"
-            android:paddingTop="16dp" />
+            android:layout_weight="1"
+            android:text="SUN"
+            android:textColor="@color/gray"
+            android:textAlignment="center"
+            android:textSize="16sp"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/assignments_rv"
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/assignments_label"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:layout_weight="1"
+            android:text="MON"
+            android:textColor="@color/gray"
+            android:textAlignment="center"
+            android:textSize="16sp"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="TUE"
+            android:textColor="@color/gray"
+            android:textAlignment="center"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="WED"
+            android:textColor="@color/gray"
+            android:textAlignment="center"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="THUR"
+            android:textColor="@color/gray"
+            android:textAlignment="center"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="FRI"
+            android:textColor="@color/gray"
+            android:textAlignment="center"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="SAT"
+            android:textColor="@color/gray"
+            android:textAlignment="center"
+            android:textSize="16sp"/>
+
+
+    </LinearLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/calendarRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>
