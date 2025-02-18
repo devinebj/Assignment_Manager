@@ -3,73 +3,126 @@ package com.example.myapplication.managers;
 import android.content.Context;
 
 import com.example.myapplication.models.Assignment;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+/**
+ * Singleton class that manages assignments.
+ */
 public class AssignmentManager {
-    private static AssignmentManager instance = null;
-    private List<Assignment> assignments;
-    private static Context context;
+    private static AssignmentManager instance;
 
-    private AssignmentManager(Context context){
+    private final Context context;
+    private ArrayList<Assignment> assignments;
+
+    /**
+     * Private constructor that initializes the AssignmentManager by loading assignments.
+     *
+     * @param context the application context.
+     */
+    private AssignmentManager(Context context) {
         this.context = context.getApplicationContext();
         this.assignments = SettingsManager.getInstance(context).loadAssignments();
     }
 
-    public static synchronized AssignmentManager getInstance(Context context){
-        if(instance == null){
+    /**
+     * Returns the singleton instance of AssignmentManager, initializing it if necessary.
+     *
+     * @param context the context used for initialization.
+     * @return the AssignmentManager instance.
+     */
+    public static synchronized AssignmentManager getInstance(Context context) {
+        if (instance == null) {
             instance = new AssignmentManager(context);
         }
-
         return instance;
     }
 
-    public static synchronized AssignmentManager getInstance(){
-        if(instance == null) {
-            throw new IllegalStateException("Data not initialized. Call getInstance(Context context) first");
+    /**
+     * Returns the singleton instance of AssignmentManager.
+     * <p>
+     * This method will throw an {@link IllegalStateException} if the manager has not been initialized
+     * using {@link #getInstance(Context)} first.
+     * </p>
+     *
+     * @return the AssignmentManager instance.
+     * @throws IllegalStateException if the instance is not initialized.
+     */
+    public static synchronized AssignmentManager getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("AssignmentManager is not initialized. Call getInstance(Context) first.");
         }
-
-         return instance;
+        return instance;
     }
 
-    public List<Assignment> getAssignments() {
+    /**
+     * Retrieves a copy of the current list of assignments.
+     *
+     * @return a new list containing all assignments.
+     */
+    public ArrayList<Assignment> getAssignments() {
         return new ArrayList<>(assignments);
     }
 
-    public void addAssignment(Assignment assignment){
-        if(assignment != null && !assignments.contains(assignment)){
+    /**
+     * Adds the specified assignment if it is not null and not already present,
+     * then saves the updated list.
+     *
+     * @param assignment the assignment to add.
+     */
+    public void addAssignment(Assignment assignment) {
+        if (assignment != null && !assignments.contains(assignment)) {
             assignments.add(assignment);
             saveAssignments();
         }
     }
 
-    public void removeAssignment(Assignment assignment){
-        if(assignment != null && assignments.contains(assignment)){
+    /**
+     * Removes the specified assignment if it exists, then saves the updated list.
+     *
+     * @param assignment the assignment to remove.
+     */
+    public void removeAssignment(Assignment assignment) {
+        if (assignment != null && assignments.contains(assignment)) {
             assignments.remove(assignment);
             saveAssignments();
         }
     }
 
-    public List<Assignment> getUpcomingAssignments() {
+    /**
+     * Returns a list of assignments with due dates after the current date.
+     *
+     * @return a list of upcoming assignments.
+     */
+    public ArrayList<Assignment> getUpcomingAssignments() {
         Date now = new Date();
-        return assignments.stream()
+        ArrayList<Assignment> upcomingAssignmentList = new ArrayList<>(assignments.stream()
                 .filter(assignment -> assignment.getDueDate().after(now))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
+
+        return upcomingAssignmentList;
     }
 
-    public List<Assignment> getPastDueAssignments() {
+    /**
+     * Returns a list of assignments with due dates before the current date.
+     *
+     * @return a list of past due assignments.
+     */
+    public ArrayList<Assignment> getPastDueAssignments() {
         Date now = new Date();
-        return assignments.stream()
+        ArrayList<Assignment> pastAssignmentList = new ArrayList<>(assignments.stream()
                 .filter(assignment -> assignment.getDueDate().before(now))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
+
+        return pastAssignmentList;
     }
 
-    public void saveAssignments(){
+    /**
+     * Persists the current list of assignments using the SettingsManager.
+     */
+    public void saveAssignments() {
         SettingsManager.getInstance(context).saveAssignments(assignments);
     }
 }

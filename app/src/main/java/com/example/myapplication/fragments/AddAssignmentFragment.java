@@ -16,19 +16,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.myapplication.R;
 import com.example.myapplication.managers.AssignmentManager;
+import com.example.myapplication.managers.CourseManager;
 import com.example.myapplication.models.Assignment;
 import com.example.myapplication.models.Course;
-import com.example.myapplication.managers.CourseManager;
-import com.example.myapplication.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
+/**
+ * Fragment for adding a new assignment.
+ */
 public class AddAssignmentFragment extends Fragment {
+
     private View rootView;
     private Spinner courseSpinner;
     private EditText assignmentNameEditText;
@@ -37,32 +41,35 @@ public class AddAssignmentFragment extends Fragment {
     private EditText dueDateEditText;
     private Button addAssignmentButton;
     private ArrayAdapter<String> spinnerAdapter;
-    private AssignmentManager assignmentManagar;
+
+    private AssignmentManager assignmentManager;
     private List<Assignment> assignments;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_add, container, false);
 
-        assignmentManagar = AssignmentManager.getInstance(requireContext());
-        assignments = assignmentManagar.getAssignments();
+        // Initialize the managers and assignment list.
+        assignmentManager = AssignmentManager.getInstance(requireContext());
+        assignments = assignmentManager.getAssignments();
 
+        // Setup UI components.
         initializeViews();
-        setupAddAssignmentButton();
-        setupDueDatePicker();
         setupSpinner();
         updateSpinner(CourseManager.getInstance(requireContext()).getCourses());
+        setupDueDatePicker();
+        setupAddAssignmentButton();
 
         return rootView;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
-
-    private void initializeViews(){
+    /**
+     * Finds and assigns the UI components from the layout.
+     */
+    private void initializeViews() {
         addAssignmentButton = rootView.findViewById(R.id.add_assignment_button);
         assignmentNameEditText = rootView.findViewById(R.id.assignment_name_et);
         pointsPossibleEditText = rootView.findViewById(R.id.points_possible_et);
@@ -71,6 +78,9 @@ public class AddAssignmentFragment extends Fragment {
         dueDateEditText = rootView.findViewById(R.id.due_date_et);
     }
 
+    /**
+     * Configures the due date EditText to open a DatePickerDialog.
+     */
     private void setupDueDatePicker() {
         dueDateEditText.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
@@ -80,73 +90,91 @@ public class AddAssignmentFragment extends Fragment {
 
             DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
                     (view, selectedYear, selectedMonth, selectedDay) -> {
-                        String selectedDate = selectedMonth + "/" + selectedDay + "/" + selectedYear;
+                        // Note: selectedMonth is zero-indexed.
+                        String selectedDate = String.format(Locale.US, "%02d/%02d/%d",
+                                selectedMonth + 1, selectedDay, selectedYear);
                         dueDateEditText.setText(selectedDate);
                     }, year, month, day);
             datePickerDialog.show();
         });
     }
 
+    /**
+     * Initializes the spinner adapter and assigns it to the course spinner.
+     */
     private void setupSpinner() {
-        spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, new ArrayList<>());
+        spinnerAdapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_spinner_item, new ArrayList<>());
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         courseSpinner.setAdapter(spinnerAdapter);
     }
 
+    /**
+     * Configures the "Add Assignment" button click listener to validate input,
+     * create a new assignment, add it via the AssignmentManager, and clear inputs.
+     */
     private void setupAddAssignmentButton() {
         addAssignmentButton.setOnClickListener(v -> {
-            Object selectedItem = courseSpinner.getSelectedItem();
-            if(selectedItem == null){
-                showToast("Please select a course!");
+            if (!validateInput()) {
                 return;
             }
 
             String course = courseSpinner.getSelectedItem().toString();
             String assignmentName = assignmentNameEditText.getText().toString();
-            String pointsPossibleString = pointsPossibleEditText.getText().toString();
-            String gradeWeightString = gradeWeightEditText.getText().toString();
+            int pointsPossible = pointsPossibleEditText.getText().toString().isEmpty() ? 0
+                    : Integer.parseInt(pointsPossibleEditText.getText().toString());
+            int gradeWeight = gradeWeightEditText.getText().toString().isEmpty() ? 0
+                    : Integer.parseInt(gradeWeightEditText.getText().toString());
             String dueDateString = dueDateEditText.getText().toString();
 
-            if(course.isEmpty()) {
-                showToast("Course cannot be empty!");
-                return;
-            }
-
-            if(assignmentName.isEmpty()) {
-                showToast("Assignment Name cannot be empty!");
-                return;
-            }
-
-            if(dueDateString.isEmpty()) {
-                showToast("Due Date cannot be empty!");
-                return;
-            }
-
-            int gradeWeight = gradeWeightString.isEmpty() ? 0 : Integer.parseInt(gradeWeightString);
-            int pointsPossible = pointsPossibleString.isEmpty() ? 0 : Integer.parseInt(pointsPossibleString);
-
             Date dueDate = parseDateString(dueDateString);
-            if(dueDate == null){
+            if (dueDate == null) {
                 showToast("Invalid date format: Please use MM/dd/yyyy.");
                 return;
             }
 
             Assignment assignment = new Assignment(
-                course,
-                assignmentName,
-                pointsPossible,
-                gradeWeight,
-                dueDate
+                    course,
+                    assignmentName,
+                    pointsPossible,
+                    gradeWeight,
+                    dueDate
             );
 
-            AssignmentManager.getInstance(requireContext()).addAssignment(assignment);
+            assignmentManager.addAssignment(assignment);
             showToast("Assignment successfully added!");
-
             clearInputs();
         });
     }
 
-    private Date parseDateString(String dateString){
+    /**
+     * Validates that required inputs are not empty.
+     *
+     * @return true if inputs are valid; false otherwise.
+     */
+    private boolean validateInput() {
+        if (courseSpinner.getSelectedItem() == null) {
+            showToast("Please select a course!");
+            return false;
+        }
+        if (assignmentNameEditText.getText().toString().trim().isEmpty()) {
+            showToast("Assignment Name cannot be empty!");
+            return false;
+        }
+        if (dueDateEditText.getText().toString().trim().isEmpty()) {
+            showToast("Due Date cannot be empty!");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Parses a date string in the format "MM/dd/yyyy".
+     *
+     * @param dateString the date string.
+     * @return the parsed Date or null if parsing fails.
+     */
+    private Date parseDateString(String dateString) {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
         try {
             return sdf.parse(dateString);
@@ -155,15 +183,23 @@ public class AddAssignmentFragment extends Fragment {
         }
     }
 
-    private void clearInputs(){
+    /**
+     * Clears all input fields.
+     */
+    private void clearInputs() {
         assignmentNameEditText.setText("");
         gradeWeightEditText.setText("");
         pointsPossibleEditText.setText("");
         dueDateEditText.setText("");
     }
 
-    private void updateSpinner(List<Course> courses){
-        if(courses == null || courses.isEmpty()) {
+    /**
+     * Updates the spinner with the names of the available courses.
+     *
+     * @param courses the list of courses.
+     */
+    private void updateSpinner(List<Course> courses) {
+        if (courses == null || courses.isEmpty()) {
             showToast("No courses available. Please add a course first.");
             spinnerAdapter.clear();
             spinnerAdapter.notifyDataSetChanged();
@@ -171,7 +207,7 @@ public class AddAssignmentFragment extends Fragment {
         }
 
         List<String> courseNames = new ArrayList<>();
-        for(Course course : courses){
+        for (Course course : courses) {
             courseNames.add(course.getName());
         }
         spinnerAdapter.clear();
@@ -179,7 +215,12 @@ public class AddAssignmentFragment extends Fragment {
         spinnerAdapter.notifyDataSetChanged();
     }
 
-    private void showToast(String message){
+    /**
+     * Displays a short Toast message.
+     *
+     * @param message the message to display.
+     */
+    private void showToast(String message) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

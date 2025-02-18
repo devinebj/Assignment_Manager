@@ -20,11 +20,19 @@ public class FileManager {
     private static final String TAG = "FileManager";
     private static final String FILE_NAME = "app_settings.json";
 
-    public static <T> void saveToFile(Context context, AppSettings appSettings){
+    /**
+     * Saves the given AppSettings to a JSON file
+     *
+     * @param context       The context is used to access the file system
+     * @param appSettings   The AppSettings object to be saved
+     */
+
+    public static void saveToFile(Context context, AppSettings appSettings){
         Gson gson = new Gson();
         String json = gson.toJson(appSettings);
 
-        try(FileWriter writer = new FileWriter(new File(context.getFilesDir(), FILE_NAME))) {
+        File file = getSettingsFile(context);
+        try(FileWriter writer = new FileWriter(file)) {
             writer.write(json);
             Log.d(TAG, "Settings successfully saved.");
         } catch (IOException e){
@@ -32,6 +40,12 @@ public class FileManager {
         }
     }
 
+    /**
+     * Loads the settings from a JSON file
+     *
+     * @param context The context used to access the file system
+     * @return The loaded AppSettings, or a new default instance if the file does not exist or an error occurs
+     */
     public static AppSettings loadFromFile(Context context){
         File file = new File(context.getFilesDir(), FILE_NAME);
 
@@ -47,5 +61,15 @@ public class FileManager {
             Log.e(TAG, "Error loading settings: " + e.getMessage());
             return new AppSettings();
         }
+    }
+
+    /**
+     * Returns the File object for the settings file
+     *
+     * @param context The context used to access the file directory
+     * @return The File representing the settings file
+     */
+    private static File getSettingsFile(Context context){
+        return new File(context.getFilesDir(), FILE_NAME);
     }
 }

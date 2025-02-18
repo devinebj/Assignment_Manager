@@ -14,11 +14,21 @@ import com.example.myapplication.R;
 import com.example.myapplication.managers.CourseManager;
 import com.example.myapplication.models.Course;
 
+import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Adapter for displaying a list of courses.
+ */
 public class CourseAdapter extends BaseAdapter<Course, CourseAdapter.CourseViewHolder> {
 
-    public CourseAdapter(Context context, List<Course> courses) {
+    /**
+     * Constructor for CourseAdapter.
+     *
+     * @param context the context used for inflating views.
+     * @param courses the list of courses to display.
+     */
+    public CourseAdapter(Context context, ArrayList<Course> courses) {
         super(context, courses);
     }
 
@@ -34,17 +44,27 @@ public class CourseAdapter extends BaseAdapter<Course, CourseAdapter.CourseViewH
         Course course = items.get(position);
         holder.courseName.setText(course.getName());
 
-        holder.deleteButton.setOnClickListener(v -> removeItem(holder.getAdapterPosition()));
+        // Set a click listener on the delete button to remove the course.
+        holder.deleteButton.setOnClickListener(v -> {
+            int pos = holder.getAdapterPosition();
+            if (pos != RecyclerView.NO_POSITION) {
+                removeItem(pos);
+            }
+        });
     }
 
     @Override
     protected void onItemRemoved(Course item) {
+        // Remove the course from the CourseManager.
         CourseManager.getInstance(context).removeCourse(item);
     }
 
+    /**
+     * ViewHolder class for CourseAdapter.
+     */
     public static class CourseViewHolder extends RecyclerView.ViewHolder {
-        TextView courseName;
-        Button deleteButton;
+        private final TextView courseName;
+        private final Button deleteButton;
 
         public CourseViewHolder(@NonNull View itemView) {
             super(itemView);

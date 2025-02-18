@@ -9,11 +9,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * BaseAdapter is an abstract class that provides common functionality for RecyclerView adapters.
+ *
+ * @param <T>  the type of the data items.
+ * @param <VH> the ViewHolder type extending RecyclerView.ViewHolder.
+ */
 public abstract class BaseAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
-    protected List<T> items;
-    protected Context context;
+    protected final ArrayList<T> items;
+    protected final Context context;
 
-    public BaseAdapter(Context context, List<T> items) {
+    /**
+     * Constructs a new BaseAdapter.
+     *
+     * @param context the context used for inflating layouts.
+     * @param items   the initial list of items.
+     */
+    public BaseAdapter(Context context, ArrayList<T> items) {
         this.context = context;
         this.items = new ArrayList<>(items);
     }
@@ -23,12 +35,22 @@ public abstract class BaseAdapter<T, VH extends RecyclerView.ViewHolder> extends
         return items.size();
     }
 
-    public void updateData(List<T> newItems) {
-        this.items.clear();
-        this.items.addAll(newItems);
+    /**
+     * Updates the adapter's data with a new list of items.
+     *
+     * @param newItems the new list of items.
+     */
+    public void updateData(@NonNull ArrayList<T> newItems) {
+        items.clear();
+        items.addAll(newItems);
         notifyDataSetChanged();
     }
 
+    /**
+     * Removes the item at the specified position from the adapter and notifies the change.
+     *
+     * @param position the position of the item to remove.
+     */
     public void removeItem(int position) {
         if (position >= 0 && position < items.size()) {
             T item = items.get(position);
@@ -40,5 +62,11 @@ public abstract class BaseAdapter<T, VH extends RecyclerView.ViewHolder> extends
         }
     }
 
+    /**
+     * Called when an item is removed from the adapter. Subclasses can override this method
+     * to perform additional actions (e.g., updating persistent storage).
+     *
+     * @param item the item that was removed.
+     */
     protected abstract void onItemRemoved(T item);
 }

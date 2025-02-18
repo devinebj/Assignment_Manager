@@ -14,11 +14,21 @@ import com.example.myapplication.R;
 import com.example.myapplication.managers.AssignmentManager;
 import com.example.myapplication.models.Assignment;
 
+import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Adapter for displaying a list of assignments.
+ */
 public class AssignmentAdapter extends BaseAdapter<Assignment, AssignmentAdapter.AssignmentViewHolder> {
 
-    public AssignmentAdapter(Context context, List<Assignment> assignments) {
+    /**
+     * Constructor for AssignmentAdapter.
+     *
+     * @param context     the context for inflating views.
+     * @param assignments the list of assignments to display.
+     */
+    public AssignmentAdapter(Context context, ArrayList<Assignment> assignments) {
         super(context, assignments);
     }
 
@@ -35,7 +45,13 @@ public class AssignmentAdapter extends BaseAdapter<Assignment, AssignmentAdapter
         holder.assignmentName.setText(assignment.getName());
         holder.courseName.setText(assignment.getCourse());
 
-        holder.completeButton.setOnClickListener(v -> removeItem(holder.getAdapterPosition()));
+        // Set a click listener on the complete button to remove the assignment.
+        holder.completeButton.setOnClickListener(v -> {
+            int pos = holder.getAdapterPosition();
+            if (pos != RecyclerView.NO_POSITION) {
+                removeItem(pos);
+            }
+        });
     }
 
     @Override
@@ -43,10 +59,13 @@ public class AssignmentAdapter extends BaseAdapter<Assignment, AssignmentAdapter
         AssignmentManager.getInstance(context).removeAssignment(item);
     }
 
+    /**
+     * ViewHolder class for AssignmentAdapter.
+     */
     public static class AssignmentViewHolder extends RecyclerView.ViewHolder {
-        TextView assignmentName;
-        TextView courseName;
-        Button completeButton;
+        private final TextView assignmentName;
+        private final TextView courseName;
+        private final Button completeButton;
 
         public AssignmentViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -56,4 +75,3 @@ public class AssignmentAdapter extends BaseAdapter<Assignment, AssignmentAdapter
         }
     }
 }
-
