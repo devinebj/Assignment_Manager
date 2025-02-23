@@ -2,6 +2,7 @@ package com.example.myapplication.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -15,34 +16,33 @@ import com.example.myapplication.managers.CalendarUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class CalendarAdapter extends BaseAdapter<Calendar, CalendarAdapter.CalendarViewHolder> {
+public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder> {
+    private final Context context;
+    private ArrayList<Calendar> days;
     private final OnItemListener onItemListener;
 
     public CalendarAdapter(Context context, ArrayList<Calendar> days, OnItemListener onItemListener) {
-        super(context, days);
+        this.context = context;
+        this.days = days;
         this.onItemListener = onItemListener;
     }
 
     @NonNull
     @Override
     public CalendarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = View.inflate(context, R.layout.cell_calendar, parent);
-        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-        if (items.size() > 15) // month view
-            layoutParams.height = (int) (parent.getHeight() * 0.166666666);
-        else // week view
-            layoutParams.height = (int) parent.getHeight();
-
-        return new CalendarViewHolder(view, onItemListener, items);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_calendar, parent, false);
+        return new CalendarViewHolder(view, onItemListener, days);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CalendarViewHolder holder, int position) {
-        final Calendar date = items.get(position);
+        final Calendar date = days.get(position);
         holder.dayOfMonth.setText(String.valueOf(date.get(Calendar.DAY_OF_MONTH)));
 
         if (CalendarUtils.isSameDate(date, CalendarUtils.selectedDate)) {
             holder.parentView.setBackgroundColor(Color.LTGRAY);
+        } else {
+            holder.parentView.setBackgroundColor(Color.TRANSPARENT);
         }
 
         if (date.get(Calendar.MONTH) == CalendarUtils.selectedDate.get(Calendar.MONTH)) {
@@ -53,8 +53,13 @@ public class CalendarAdapter extends BaseAdapter<Calendar, CalendarAdapter.Calen
     }
 
     @Override
-    protected void onItemRemoved(Calendar item) {
-        // Handle removal
+    public int getItemCount() {
+        return days.size();
+    }
+
+    public void updateCalendar(ArrayList<Calendar> newDays){
+        this.days = newDays;
+        notifyDataSetChanged();;
     }
 
     public interface OnItemListener {

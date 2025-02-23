@@ -34,6 +34,20 @@ public class CalendarUtils{
         return daysInMonthArray;
     }
 
+    public static ArrayList<Calendar> daysInWeekArray(Calendar date) {
+        ArrayList<Calendar> daysInWeek = new ArrayList<>();
+        Calendar weekStart = (Calendar) date.clone();
+        weekStart.set(Calendar.DAY_OF_WEEK, weekStart.getFirstDayOfWeek());
+
+        for(int i = 0; i < 7; i++){
+            Calendar day = (Calendar) weekStart.clone();
+            day.add(Calendar.DAY_OF_MONTH, i);
+            daysInWeek.add(day);
+        }
+
+        return daysInWeek;
+    }
+
     public static boolean isSameDate(Calendar date1, Calendar date2) {
         return date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR) &&
                 date1.get(Calendar.MONTH) == date2.get(Calendar.MONTH) &&
