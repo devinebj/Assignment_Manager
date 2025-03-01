@@ -15,7 +15,7 @@
             android:id="@+id/course_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Course"
+            android:text="@string/add_class"
             android:textAppearance="?attr/textAppearanceHeadline6" />
 
         <!-- Course Spinner -->
@@ -30,7 +30,7 @@
             android:id="@+id/assignment_name_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Assignment Name"
+            android:text="@string/assignment_name"
             android:textAppearance="?attr/textAppearanceHeadline6" />
 
         <!-- Assignment Name Input -->
@@ -51,7 +51,7 @@
             android:id="@+id/points_possible_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Points Possible"
+            android:text="@string/points_possible"
             android:textAppearance="?attr/textAppearanceHeadline6" />
 
         <!-- Points Possible Input -->
@@ -73,7 +73,7 @@
             android:id="@+id/grade_weight_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Grade Weight"
+            android:text="@string/grade_weight"
             android:textAppearance="?attr/textAppearanceHeadline6" />
 
         <!-- Grade Weight Input -->
@@ -95,7 +95,7 @@
             android:id="@+id/due_date_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Due Date"
+            android:text="@string/due_date"
             android:textAppearance="?attr/textAppearanceHeadline6" />
 
         <!-- Due Date Input -->

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,25 +23,41 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class DailyViewFragment extends Fragment {
-    private TextView monthDayText;
-    private TextView dayOfWeekTV;
+    private Button weekViewBtn, monthViewBtn;
+    private TextView monthDayText, dayOfWeekTV;
     private RecyclerView hourRecyclerView;
     private EventManager eventManager;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_weekly, container, false);
+        View view = inflater.inflate(R.layout.fragment_daily, container, false);
         eventManager = new EventManager();
         initWidgets(view);
+        setupListeners();
         setDayView();
         return view;
     }
 
     private void initWidgets(View view) {
+        weekViewBtn = view.findViewById(R.id.week_view_button);
+        monthViewBtn = view.findViewById(R.id.month_view_button);
         monthDayText = view.findViewById(R.id.monthDayText);
         dayOfWeekTV = view.findViewById(R.id.dayOfWeekTV);
         hourRecyclerView = view.findViewById(R.id.hourListView);
+    }
+
+    private void setupListeners(){
+        weekViewBtn.setOnClickListener(v -> switchFragment(new WeekViewFragment()));
+        monthViewBtn.setOnClickListener(v -> switchFragment(new HomeFragment()));
+    }
+
+    private void switchFragment(Fragment fragment){
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     private void setDayView() {

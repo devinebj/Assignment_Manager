@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -19,7 +18,6 @@ import com.example.myapplication.managers.EventManager;
 import com.example.myapplication.models.Event;
 import com.example.myapplication.adapters.EventAdapter;
 import com.example.myapplication.R;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,7 +25,7 @@ import java.util.Date;
 public class WeekViewFragment extends Fragment implements CalendarAdapter.OnItemListener {
     private TextView monthYearText;
     private RecyclerView calendarRecyclerView, eventRecyclerView;
-    private Button prevWeekBtn, nextWeekBtn, newEventBtn, dailyViewBtn;
+    private Button prevWeekBtn, nextWeekBtn, newEventBtn, dayViewBtn, monthViewBtn;
 
     @Nullable
     @Override
@@ -47,14 +45,24 @@ public class WeekViewFragment extends Fragment implements CalendarAdapter.OnItem
         prevWeekBtn = view.findViewById(R.id.prevWeekBtn);
         nextWeekBtn = view.findViewById(R.id.nextWeekBtn);
         newEventBtn = view.findViewById(R.id.newEventBtn);
-        dailyViewBtn = view.findViewById(R.id.dailyViewBtn);
+        dayViewBtn = view.findViewById(R.id.day_view_button);
+        monthViewBtn = view.findViewById(R.id.month_view_button);
     }
 
     private void setupListeners() {
        prevWeekBtn.setOnClickListener(v -> previousWeekAction());
        nextWeekBtn.setOnClickListener(v -> nextWeekAction());
        newEventBtn.setOnClickListener(v -> newEventAction());
-       dailyViewBtn.setOnClickListener(v -> dailyAction());
+       dayViewBtn.setOnClickListener(v -> switchFragment(new DailyViewFragment()));
+       monthViewBtn.setOnClickListener(v -> switchFragment(new HomeFragment()));
+    }
+
+    private void switchFragment(Fragment fragment){
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     private void setWeekView() {
@@ -91,10 +99,6 @@ public class WeekViewFragment extends Fragment implements CalendarAdapter.OnItem
 
     private void newEventAction(){
         // TODO: Implement event creation logic
-    }
-
-    private void dailyAction() {
-        // TODO: Implement switching to daily view
     }
 
     @Override

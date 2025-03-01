@@ -1,8 +1,12 @@
 package com.example.myapplication.fragments;
 
 import android.app.DatePickerDialog;
+import android.graphics.Color;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,20 +33,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Fragment for adding a new assignment.
- */
 public class AddAssignmentFragment extends Fragment {
 
     private View rootView;
     private Spinner courseSpinner;
-    private EditText assignmentNameEditText;
-    private EditText pointsPossibleEditText;
-    private EditText gradeWeightEditText;
-    private EditText dueDateEditText;
+    private EditText assignmentNameEditText, pointsPossibleEditText, gradeWeightEditText, dueDateEditText;
     private Button addAssignmentButton;
     private ArrayAdapter<String> spinnerAdapter;
-
+    private TextView assignmentNameLabel, dueDateLabel;
     private AssignmentManager assignmentManager;
     private List<Assignment> assignments;
 
@@ -52,11 +51,9 @@ public class AddAssignmentFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_add, container, false);
 
-        // Initialize the managers and assignment list.
         assignmentManager = AssignmentManager.getInstance(requireContext());
         assignments = assignmentManager.getAssignments();
 
-        // Setup UI components.
         initializeViews();
         setupSpinner();
         updateSpinner(CourseManager.getInstance(requireContext()).getCourses());
@@ -66,9 +63,6 @@ public class AddAssignmentFragment extends Fragment {
         return rootView;
     }
 
-    /**
-     * Finds and assigns the UI components from the layout.
-     */
     private void initializeViews() {
         addAssignmentButton = rootView.findViewById(R.id.add_assignment_button);
         assignmentNameEditText = rootView.findViewById(R.id.assignment_name_et);
@@ -76,11 +70,10 @@ public class AddAssignmentFragment extends Fragment {
         gradeWeightEditText = rootView.findViewById(R.id.grade_weight_et);
         courseSpinner = rootView.findViewById(R.id.courses_spinner);
         dueDateEditText = rootView.findViewById(R.id.due_date_et);
+        assignmentNameLabel = rootView.findViewById(R.id.assignment_name_tv);
+        dueDateLabel = rootView.findViewById(R.id.due_date_tv);
     }
 
-    /**
-     * Configures the due date EditText to open a DatePickerDialog.
-     */
     private void setupDueDatePicker() {
         dueDateEditText.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
@@ -99,9 +92,6 @@ public class AddAssignmentFragment extends Fragment {
         });
     }
 
-    /**
-     * Initializes the spinner adapter and assigns it to the course spinner.
-     */
     private void setupSpinner() {
         spinnerAdapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_spinner_item, new ArrayList<>());
@@ -109,10 +99,6 @@ public class AddAssignmentFragment extends Fragment {
         courseSpinner.setAdapter(spinnerAdapter);
     }
 
-    /**
-     * Configures the "Add Assignment" button click listener to validate input,
-     * create a new assignment, add it via the AssignmentManager, and clear inputs.
-     */
     private void setupAddAssignmentButton() {
         addAssignmentButton.setOnClickListener(v -> {
             if (!validateInput()) {
@@ -147,33 +133,20 @@ public class AddAssignmentFragment extends Fragment {
         });
     }
 
-    /**
-     * Validates that required inputs are not empty.
-     *
-     * @return true if inputs are valid; false otherwise.
-     */
     private boolean validateInput() {
-        if (courseSpinner.getSelectedItem() == null) {
-            showToast("Please select a course!");
-            return false;
-        }
+        boolean isValid = courseSpinner.getSelectedItem() != null;
+
         if (assignmentNameEditText.getText().toString().trim().isEmpty()) {
-            showToast("Assignment Name cannot be empty!");
-            return false;
+            markRequired(assignmentNameLabel, "Assignment Name *");
+            isValid = false;
         }
         if (dueDateEditText.getText().toString().trim().isEmpty()) {
-            showToast("Due Date cannot be empty!");
-            return false;
+            markRequired(dueDateLabel, "Due Date *");
+            isValid = false;
         }
-        return true;
+        return isValid;
     }
 
-    /**
-     * Parses a date string in the format "MM/dd/yyyy".
-     *
-     * @param dateString the date string.
-     * @return the parsed Date or null if parsing fails.
-     */
     private Date parseDateString(String dateString) {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
         try {
@@ -183,9 +156,6 @@ public class AddAssignmentFragment extends Fragment {
         }
     }
 
-    /**
-     * Clears all input fields.
-     */
     private void clearInputs() {
         assignmentNameEditText.setText("");
         gradeWeightEditText.setText("");
@@ -193,11 +163,6 @@ public class AddAssignmentFragment extends Fragment {
         dueDateEditText.setText("");
     }
 
-    /**
-     * Updates the spinner with the names of the available courses.
-     *
-     * @param courses the list of courses.
-     */
     private void updateSpinner(List<Course> courses) {
         if (courses == null || courses.isEmpty()) {
             showToast("No courses available. Please add a course first.");
@@ -215,12 +180,20 @@ public class AddAssignmentFragment extends Fragment {
         spinnerAdapter.notifyDataSetChanged();
     }
 
-    /**
-     * Displays a short Toast message.
-     *
-     * @param message the message to display.
-     */
     private void showToast(String message) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void markRequired(TextView label, String baseText){
+        SpannableString spannable = new SpannableString(baseText);
+        spannable.setSpan(new ForegroundColorSpan(Color.RED), 0, baseText.length(), SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+        label.setText(spannable);
+    }
+
+    private void resetRequired(TextView label, String baseText) {
+        SpannableString spannable = new SpannableString(baseText);
+        spannable.setSpan(new ForegroundColorSpan(Color.BLACK), 0, baseText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        label.setText(spannable);
     }
 }

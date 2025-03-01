@@ -25,7 +25,7 @@ import java.util.Locale;
 public class HomeFragment extends Fragment implements CalendarAdapter.OnItemListener {
     private TextView monthYearTV;
     private RecyclerView calendarRecyclerView;
-    private Button prevMonthBtn, nextMonthBtn;
+    private Button prevMonthBtn, nextMonthBtn, dayViewBtn, weekViewBtn;
     private Calendar currentCalendar;
     private CalendarAdapter calendarAdapter;
     private ArrayList<Calendar> daysInMonthList;
@@ -45,6 +45,8 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         calendarRecyclerView = view.findViewById(R.id.calendarRecyclerView);
         prevMonthBtn = view.findViewById(R.id.prevMonthBtn);
         nextMonthBtn = view.findViewById(R.id.nextMonthBtn);
+        dayViewBtn = view.findViewById(R.id.day_view_button);
+        weekViewBtn = view.findViewById(R.id.week_view_button);
     }
 
     private void setupCalendar() {
@@ -58,6 +60,9 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
     }
 
     private void setupListeners() {
+        dayViewBtn.setOnClickListener(v -> switchFragment(new DailyViewFragment()));
+        weekViewBtn.setOnClickListener(v -> switchFragment(new WeekViewFragment()));
+
         prevMonthBtn.setOnClickListener(v -> {
             currentCalendar.add(Calendar.MONTH, -1);
             updateMonthYearDisplay();
@@ -69,6 +74,14 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
             updateMonthYearDisplay();
             updateCalendar();
         });
+    }
+
+    private void switchFragment(Fragment fragment) {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     private void updateMonthYearDisplay() {
