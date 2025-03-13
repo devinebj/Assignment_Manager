@@ -24,11 +24,21 @@ public class CalendarUtils{
         Calendar monthStart = (Calendar) selectedDate.clone();
         monthStart.set(Calendar.DAY_OF_MONTH, 1);
 
+        int firstDayOfWeek = monthStart.get(Calendar.DAY_OF_WEEK) - 1;
+
+        for(int i = 0; i < firstDayOfWeek; i++){
+            daysInMonthArray.add(null);
+        }
+
         int daysInMonth = monthStart.getActualMaximum(Calendar.DAY_OF_MONTH);
         for(int i = 0; i < daysInMonth; i++){
             Calendar day = (Calendar) monthStart.clone();
-            day.add(Calendar.DAY_OF_MONTH, 1);
+            day.add(Calendar.DAY_OF_MONTH, i);
             daysInMonthArray.add(day);
+        }
+
+        while (daysInMonthArray.size() % 7 != 0){
+            daysInMonthArray.add(null);
         }
 
         return daysInMonthArray;
@@ -43,6 +53,7 @@ public class CalendarUtils{
             Calendar day = (Calendar) weekStart.clone();
             day.add(Calendar.DAY_OF_MONTH, i);
             daysInWeek.add(day);
+            weekStart.add(Calendar.DAY_OF_MONTH, 1);
         }
 
         return daysInWeek;

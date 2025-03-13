@@ -2,6 +2,7 @@ package com.example.myapplication.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,24 +32,37 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
     @Override
     public CalendarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_calendar, parent, false);
+
+        if(context == null){
+            throw new IllegalStateException("Context is null in CalendarAdapter");
+        }
+
         return new CalendarViewHolder(view, onItemListener, days);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CalendarViewHolder holder, int position) {
         final Calendar date = days.get(position);
-        holder.dayOfMonth.setText(String.valueOf(date.get(Calendar.DAY_OF_MONTH)));
 
-        if (CalendarUtils.isSameDate(date, CalendarUtils.selectedDate)) {
-            holder.parentView.setBackgroundColor(Color.LTGRAY);
+        if (date != null) {
+            holder.dayOfMonth.setText(String.valueOf(date.get(Calendar.DAY_OF_MONTH)));
+            Log.d("CalendarAdapter", "Date set: " + date.getTime());
+
+            if (CalendarUtils.isSameDate(date, CalendarUtils.selectedDate)) {
+                holder.parentView.setBackgroundColor(Color.LTGRAY);
+            } else {
+                holder.parentView.setBackgroundColor(Color.TRANSPARENT);
+            }
+
+            if (date.get(Calendar.MONTH) == CalendarUtils.selectedDate.get(Calendar.MONTH)) {
+                holder.dayOfMonth.setTextColor(Color.BLACK);
+            } else {
+                holder.dayOfMonth.setTextColor(Color.LTGRAY);
+            }
         } else {
+            holder.dayOfMonth.setText("");
             holder.parentView.setBackgroundColor(Color.TRANSPARENT);
-        }
-
-        if (date.get(Calendar.MONTH) == CalendarUtils.selectedDate.get(Calendar.MONTH)) {
-            holder.dayOfMonth.setTextColor(Color.BLACK);
-        } else {
-            holder.dayOfMonth.setTextColor(Color.LTGRAY);
+            Log.d("CalendarAdapter", "Null date at position: " + position);
         }
     }
 
@@ -59,7 +73,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
 
     public void updateCalendar(ArrayList<Calendar> newDays){
         this.days = newDays;
-        notifyDataSetChanged();;
+        notifyDataSetChanged();
     }
 
     public interface OnItemListener {
@@ -84,7 +98,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            if (position != RecyclerView.NO_POSITION) {
+            if (position != RecyclerView.NO_POSITION && days.get(position) != null) {
                 Calendar date = days.get(position);
                 onItemListener.onItemClick(position, date);
             }

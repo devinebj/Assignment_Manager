@@ -51,6 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@null"
+            android:text="Prev"
             android:textStyle="bold"
             android:textSize="20sp"/>
 
@@ -70,6 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@null"
+            android:text="Next"
             android:textStyle="bold"
             android:textSize="20sp"/>
 

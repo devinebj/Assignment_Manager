@@ -25,7 +25,7 @@ import java.util.Date;
 public class WeekViewFragment extends Fragment implements CalendarAdapter.OnItemListener {
     private TextView monthYearText;
     private RecyclerView calendarRecyclerView, eventRecyclerView;
-    private Button prevWeekBtn, nextWeekBtn, newEventBtn, dayViewBtn, monthViewBtn;
+    private Button prevWeekBtn, nextWeekBtn, addEventBtn, dayViewBtn, monthViewBtn;
 
     @Nullable
     @Override
@@ -44,7 +44,7 @@ public class WeekViewFragment extends Fragment implements CalendarAdapter.OnItem
 
         prevWeekBtn = view.findViewById(R.id.prevWeekBtn);
         nextWeekBtn = view.findViewById(R.id.nextWeekBtn);
-        newEventBtn = view.findViewById(R.id.newEventBtn);
+        addEventBtn = view.findViewById(R.id.add_event_button);
         dayViewBtn = view.findViewById(R.id.day_view_button);
         monthViewBtn = view.findViewById(R.id.month_view_button);
     }
@@ -52,7 +52,7 @@ public class WeekViewFragment extends Fragment implements CalendarAdapter.OnItem
     private void setupListeners() {
        prevWeekBtn.setOnClickListener(v -> previousWeekAction());
        nextWeekBtn.setOnClickListener(v -> nextWeekAction());
-       newEventBtn.setOnClickListener(v -> newEventAction());
+       addEventBtn.setOnClickListener(v -> switchFragment(new AddAssignmentFragment()));
        dayViewBtn.setOnClickListener(v -> switchFragment(new DailyViewFragment()));
        monthViewBtn.setOnClickListener(v -> switchFragment(new HomeFragment()));
     }
@@ -95,10 +95,6 @@ public class WeekViewFragment extends Fragment implements CalendarAdapter.OnItem
     private void nextWeekAction() {
         CalendarUtils.selectedDate.add(Calendar.WEEK_OF_YEAR, 1);
         setWeekView();
-    }
-
-    private void newEventAction(){
-        // TODO: Implement event creation logic
     }
 
     @Override

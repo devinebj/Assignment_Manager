@@ -23,7 +23,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class DailyViewFragment extends Fragment {
-    private Button weekViewBtn, monthViewBtn;
+    private Button weekViewBtn, monthViewBtn, addEventBtn;
     private TextView monthDayText, dayOfWeekTV;
     private RecyclerView hourRecyclerView;
     private EventManager eventManager;
@@ -40,6 +40,7 @@ public class DailyViewFragment extends Fragment {
     }
 
     private void initWidgets(View view) {
+        addEventBtn = view.findViewById(R.id.add_event_button);
         weekViewBtn = view.findViewById(R.id.week_view_button);
         monthViewBtn = view.findViewById(R.id.month_view_button);
         monthDayText = view.findViewById(R.id.monthDayText);
@@ -50,6 +51,7 @@ public class DailyViewFragment extends Fragment {
     private void setupListeners(){
         weekViewBtn.setOnClickListener(v -> switchFragment(new WeekViewFragment()));
         monthViewBtn.setOnClickListener(v -> switchFragment(new HomeFragment()));
+        addEventBtn.setOnClickListener(v -> switchFragment(new AddAssignmentFragment()));
     }
 
     private void switchFragment(Fragment fragment){

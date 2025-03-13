@@ -2,6 +2,7 @@ package com.example.myapplication.fragments;
 
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +55,13 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         updateMonthYearDisplay();
         daysInMonthList = CalendarUtils.daysInMonthArray();
 
-        calendarRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 7));
+        Log.d("CalendarDebug", "Days in month list size: " + daysInMonthList.size());
+        for(Calendar day : daysInMonthList){
+            Log.d("CalendarDebug", day != null ? day.getTime().toString() : "NULL");
+        }
+
+        GridLayoutManager layoutManager = new GridLayoutManager(requireContext(), 7);
+        calendarRecyclerView.setLayoutManager(layoutManager);
         calendarAdapter = new CalendarAdapter(getContext(), daysInMonthList, this);
         calendarRecyclerView.setAdapter(calendarAdapter);
     }
