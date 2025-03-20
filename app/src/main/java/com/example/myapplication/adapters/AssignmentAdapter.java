@@ -15,10 +15,9 @@ import com.example.myapplication.managers.AssignmentManager;
 import com.example.myapplication.models.Assignment;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Adapter for displaying a list of assignments.
+ * Adapter for displaying and managing a list of assignments.
  */
 public class AssignmentAdapter extends BaseAdapter<Assignment, AssignmentAdapter.AssignmentViewHolder> {
 
@@ -42,10 +41,12 @@ public class AssignmentAdapter extends BaseAdapter<Assignment, AssignmentAdapter
     @Override
     public void onBindViewHolder(@NonNull AssignmentViewHolder holder, int position) {
         Assignment assignment = items.get(position);
+
+        // Populate views with assignment data
         holder.assignmentName.setText(assignment.getName());
         holder.courseName.setText(assignment.getCourse());
 
-        // Set a click listener on the complete button to remove the assignment.
+        // Handle complete button click to remove assignment
         holder.completeButton.setOnClickListener(v -> {
             int pos = holder.getAdapterPosition();
             if (pos != RecyclerView.NO_POSITION) {
@@ -54,13 +55,18 @@ public class AssignmentAdapter extends BaseAdapter<Assignment, AssignmentAdapter
         });
     }
 
+    /**
+     * Handles item removal from persistent storage.
+     *
+     * @param item the assignment being removed.
+     */
     @Override
     protected void onItemRemoved(Assignment item) {
         AssignmentManager.getInstance(context).removeAssignment(item);
     }
 
     /**
-     * ViewHolder class for AssignmentAdapter.
+     * ViewHolder for assignment items.
      */
     public static class AssignmentViewHolder extends RecyclerView.ViewHolder {
         private final TextView assignmentName;

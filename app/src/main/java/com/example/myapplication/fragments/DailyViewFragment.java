@@ -11,8 +11,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplication.adapters.AssignmentAdapter;
+import com.example.myapplication.managers.AssignmentManager;
 import com.example.myapplication.managers.CalendarUtils;
 import com.example.myapplication.managers.EventManager;
+import com.example.myapplication.models.Assignment;
 import com.example.myapplication.models.Event;
 import com.example.myapplication.adapters.HourAdapter;
 import com.example.myapplication.models.HourEvent;
@@ -25,7 +28,7 @@ import java.util.Locale;
 public class DailyViewFragment extends Fragment {
     private Button weekViewBtn, monthViewBtn, addEventBtn;
     private TextView monthDayText, dayOfWeekTV;
-    private RecyclerView hourRecyclerView;
+    private RecyclerView dayRecyclerView;
     private EventManager eventManager;
 
     @Nullable
@@ -39,13 +42,19 @@ public class DailyViewFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setAssignmentAdapter();
+    }
+
     private void initWidgets(View view) {
         addEventBtn = view.findViewById(R.id.add_event_button);
         weekViewBtn = view.findViewById(R.id.week_view_button);
         monthViewBtn = view.findViewById(R.id.month_view_button);
         monthDayText = view.findViewById(R.id.monthDayText);
         dayOfWeekTV = view.findViewById(R.id.dayOfWeekTV);
-        hourRecyclerView = view.findViewById(R.id.hourListView);
+        dayRecyclerView = view.findViewById(R.id.day_view_rv);
     }
 
     private void setupListeners(){
@@ -69,11 +78,34 @@ public class DailyViewFragment extends Fragment {
         dayOfWeekTV.setText(dayOfWeek);
 
         setHourAdapter();
+        setAssignmentAdapter();
     }
 
     private void setHourAdapter() {
         HourAdapter hourAdapter = new HourAdapter(requireContext(), hourEventList());
-        hourRecyclerView.setAdapter(hourAdapter);
+        dayRecyclerView.setAdapter(hourAdapter);
+    }
+
+    private ArrayList<Assignment> getAssignmentForSelectedDay() {
+        ArrayList<Assignment> assignmentsDueToday = new ArrayList<>();
+        AssignmentManager assignmentManager = AssignmentManager.getInstance(requireContext());
+        for(Assignment assignment : assignmentManager.getAssignments()){
+            Calendar assignmentCal = Calendar.getInstance();
+            assignmentCal.setTime(assignment.getDueDate());
+
+            if(assignmentCal.get(Calendar.YEAR) == CalendarUtils.selectedDate.get(Calendar.YEAR) &&
+               assignmentCal.get(Calendar.DAY_OF_YEAR) == CalendarUtils.selectedDate.get(Calendar.DAY_OF_YEAR)) {
+                    assignmentsDueToday.add(assignment);
+            }
+        }
+
+        return assignmentsDueToday;
+    }
+
+    private void setAssignmentAdapter() {
+        ArrayList<Assignment> assignmentsToday = getAssignmentForSelectedDay();
+        AssignmentAdapter assignmentAdapter = new AssignmentAdapter(requireContext(), assignmentsToday);
+        dayRecyclerView.setAdapter(assignmentAdapter);
     }
 
     private ArrayList<HourEvent> hourEventList() {

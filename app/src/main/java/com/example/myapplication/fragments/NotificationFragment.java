@@ -48,6 +48,12 @@ public class NotificationFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setAssignmentAdapter();
+    }
+
     /**
      * Finds and initializes UI components from the inflated view.
      *
@@ -89,5 +95,13 @@ public class NotificationFragment extends Fragment {
             recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
             recyclerView.setAdapter(new NotificationAdapter(requireContext(), assignments));
         }
+    }
+
+    private void setAssignmentAdapter() {
+        ArrayList<Assignment> upcomingAssignments = assignmentManager.getUpcomingAssignments();
+        ArrayList<Assignment> pastDueAssignments = assignmentManager.getPastDueAssignments();
+
+        setupRecyclerView(upcomingRecyclerView, upcomingEmptyPlaceHolder, upcomingAssignments);
+        setupRecyclerView(pastDueRecyclerView, pastDueEmptyPlaceHolder, pastDueAssignments);
     }
 }

@@ -32,6 +32,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class AddAssignmentFragment extends Fragment {
 
@@ -40,9 +41,8 @@ public class AddAssignmentFragment extends Fragment {
     private EditText assignmentNameEditText, pointsPossibleEditText, gradeWeightEditText, dueDateEditText;
     private Button addAssignmentButton;
     private ArrayAdapter<String> spinnerAdapter;
-    private TextView assignmentNameLabel, dueDateLabel;
+    private TextView assignmentNameLabel, dueDateLabel, pointsPossibleLabel;
     private AssignmentManager assignmentManager;
-    private List<Assignment> assignments;
 
     @Nullable
     @Override
@@ -52,7 +52,6 @@ public class AddAssignmentFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_add, container, false);
 
         assignmentManager = AssignmentManager.getInstance(requireContext());
-        assignments = assignmentManager.getAssignments();
 
         initializeViews();
         setupSpinner();
@@ -71,6 +70,7 @@ public class AddAssignmentFragment extends Fragment {
         courseSpinner = rootView.findViewById(R.id.courses_spinner);
         dueDateEditText = rootView.findViewById(R.id.due_date_et);
         assignmentNameLabel = rootView.findViewById(R.id.assignment_name_tv);
+        pointsPossibleLabel = rootView.findViewById(R.id.points_possible_tv);
         dueDateLabel = rootView.findViewById(R.id.due_date_tv);
     }
 
@@ -81,7 +81,7 @@ public class AddAssignmentFragment extends Fragment {
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
                     (view, selectedYear, selectedMonth, selectedDay) -> {
                         // Note: selectedMonth is zero-indexed.
                         String selectedDate = String.format(Locale.US, "%02d/%02d/%d",
@@ -103,12 +103,15 @@ public class AddAssignmentFragment extends Fragment {
         addAssignmentButton.setOnClickListener(v -> {
             if (!validateInput()) {
                 return;
+            } else {
+                resetRequired(assignmentNameLabel, "Assignment Name *");
+                resetRequired(pointsPossibleLabel, "Points Possible *");
+                resetRequired(dueDateLabel, "Due Date *");
             }
 
             String course = courseSpinner.getSelectedItem().toString();
             String assignmentName = assignmentNameEditText.getText().toString();
-            int pointsPossible = pointsPossibleEditText.getText().toString().isEmpty() ? 0
-                    : Integer.parseInt(pointsPossibleEditText.getText().toString());
+            int pointsPossible = Integer.parseInt(pointsPossibleEditText.getText().toString());
             int gradeWeight = gradeWeightEditText.getText().toString().isEmpty() ? 0
                     : Integer.parseInt(gradeWeightEditText.getText().toString());
             String dueDateString = dueDateEditText.getText().toString();
@@ -140,10 +143,17 @@ public class AddAssignmentFragment extends Fragment {
             markRequired(assignmentNameLabel, "Assignment Name *");
             isValid = false;
         }
+
+        if (pointsPossibleEditText.getText().toString().trim().isEmpty()){
+            markRequired(pointsPossibleLabel, "Points Possible *");
+            isValid = false;
+        }
+
         if (dueDateEditText.getText().toString().trim().isEmpty()) {
             markRequired(dueDateLabel, "Due Date *");
             isValid = false;
         }
+
         return isValid;
     }
 
@@ -192,8 +202,8 @@ public class AddAssignmentFragment extends Fragment {
 
     private void resetRequired(TextView label, String baseText) {
         SpannableString spannable = new SpannableString(baseText);
-        spannable.setSpan(new ForegroundColorSpan(Color.BLACK), 0, baseText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
+        spannable.setSpan(new ForegroundColorSpan(Color.BLACK), 0, baseText.length() - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new ForegroundColorSpan(Color.RED), baseText.length() - 1, baseText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         label.setText(spannable);
     }
 }

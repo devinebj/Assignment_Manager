@@ -49,8 +49,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/blue"
             android:background="@null"
+            android:text="Prev"
             android:textStyle="bold"
             android:textSize="20sp"/>
 
@@ -69,8 +69,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/blue"
             android:background="@null"
+            android:text="Next"
             android:textStyle="bold"
             android:textSize="20sp"/>
 
