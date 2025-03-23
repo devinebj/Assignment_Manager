@@ -35,7 +35,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class AddAssignmentFragment extends Fragment {
-
+    private String originalAssignmentName = null;
     private View rootView;
     private Spinner courseSpinner;
     private EditText assignmentNameEditText, pointsPossibleEditText, gradeWeightEditText, dueDateEditText;
@@ -54,16 +54,22 @@ public class AddAssignmentFragment extends Fragment {
         assignmentManager = AssignmentManager.getInstance(requireContext());
 
         initializeViews();
+
         setupSpinner();
         updateSpinner(CourseManager.getInstance(requireContext()).getCourses());
         setupDueDatePicker();
+
+        Bundle args = getArguments();
+        if(args != null && "edit".equals(args.getString("mode"))) {
+            populateFieldsForEdit(args);
+        }
+
         setupAddAssignmentButton();
 
         return rootView;
     }
 
     private void initializeViews() {
-        addAssignmentButton = rootView.findViewById(R.id.add_assignment_button);
         assignmentNameEditText = rootView.findViewById(R.id.assignment_name_et);
         pointsPossibleEditText = rootView.findViewById(R.id.points_possible_et);
         gradeWeightEditText = rootView.findViewById(R.id.grade_weight_et);
@@ -72,6 +78,30 @@ public class AddAssignmentFragment extends Fragment {
         assignmentNameLabel = rootView.findViewById(R.id.assignment_name_tv);
         pointsPossibleLabel = rootView.findViewById(R.id.points_possible_tv);
         dueDateLabel = rootView.findViewById(R.id.due_date_tv);
+    }
+
+    private void setupSpinner() {
+        spinnerAdapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_spinner_item, new ArrayList<>());
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        courseSpinner.setAdapter(spinnerAdapter);
+    }
+
+    private void updateSpinner(List<Course> courses) {
+        if (courses == null || courses.isEmpty()) {
+            showToast("No courses available. Please add a course first.");
+            spinnerAdapter.clear();
+            spinnerAdapter.notifyDataSetChanged();
+            return;
+        }
+
+        List<String> courseNames = new ArrayList<>();
+        for (Course course : courses) {
+            courseNames.add(course.getName());
+        }
+        spinnerAdapter.clear();
+        spinnerAdapter.addAll(courseNames);
+        spinnerAdapter.notifyDataSetChanged();
     }
 
     private void setupDueDatePicker() {
@@ -92,15 +122,29 @@ public class AddAssignmentFragment extends Fragment {
         });
     }
 
-    private void setupSpinner() {
-        spinnerAdapter = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_spinner_item, new ArrayList<>());
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        courseSpinner.setAdapter(spinnerAdapter);
+    private void populateFieldsForEdit(Bundle args){
+        originalAssignmentName = args.getString("assignmentName");
+        assignmentNameEditText.setText(args.getString("assignmentName"));
+        pointsPossibleEditText.setText(String.valueOf(args.getInt("pointsPossible")));
+        gradeWeightEditText.setText(String.valueOf(args.getInt("gradeWeight")));
+        dueDateEditText.setText(args.getString("dueDate"));
+
+        String courseName = args.getString("courseName");
+        int spinnerPosition = spinnerAdapter.getPosition(courseName);
+        courseSpinner.setSelection(spinnerPosition);
+
+        TextView header = rootView.findViewById(R.id.assignment_header_tv);
+        header.setText("Edit Assignment");
+
+        addAssignmentButton = rootView.findViewById(R.id.save_assignment_button);
+        addAssignmentButton.setText("Save Changes");
     }
 
     private void setupAddAssignmentButton() {
         addAssignmentButton.setOnClickListener(v -> {
+            Bundle args = getArguments();
+            boolean isEditMode = args != null && "edit".equals(args.getString("mode"));
+
             if (!validateInput()) {
                 return;
             } else {
@@ -130,8 +174,14 @@ public class AddAssignmentFragment extends Fragment {
                     dueDate
             );
 
-            assignmentManager.addAssignment(assignment);
-            showToast("Assignment successfully added!");
+            if(isEditMode){
+                assignmentManager.updateAssignment(originalAssignmentName, assignment);
+                showToast("Assignment Updated!");
+            } else {
+                assignmentManager.addAssignment(assignment);
+                showToast("Assignment successfully added!");
+            }
+
             clearInputs();
         });
     }
@@ -171,23 +221,6 @@ public class AddAssignmentFragment extends Fragment {
         gradeWeightEditText.setText("");
         pointsPossibleEditText.setText("");
         dueDateEditText.setText("");
-    }
-
-    private void updateSpinner(List<Course> courses) {
-        if (courses == null || courses.isEmpty()) {
-            showToast("No courses available. Please add a course first.");
-            spinnerAdapter.clear();
-            spinnerAdapter.notifyDataSetChanged();
-            return;
-        }
-
-        List<String> courseNames = new ArrayList<>();
-        for (Course course : courses) {
-            courseNames.add(course.getName());
-        }
-        spinnerAdapter.clear();
-        spinnerAdapter.addAll(courseNames);
-        spinnerAdapter.notifyDataSetChanged();
     }
 
     private void showToast(String message) {

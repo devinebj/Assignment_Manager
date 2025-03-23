@@ -1,15 +1,17 @@
 <resources>
     <string name="app_name">Assignment Manager</string>
 
+
     <!-- Navigation Bar Strings -->
         <string name="title_home">Home</string>
         <string name="title_notifications">Notifications</string>
         <string name="title_add">Add Assignment</string>
         <string name="title_settings">Settings</string>
 
+
     <!-- Add assignment strings -->
-        <string name="add_class">
-            <b>Class</b>
+        <string name="add_course">
+            <b>Course</b>
             <font color="#FF0000">*</font>
         </string>
 
@@ -17,20 +19,28 @@
             <b>Assignment Name</b>
             <font color="#FF0000">*</font>
         </string>
+        <string name="assignment_name_hint">Enter assignment name</string>
 
         <string name="points_possible">
             <b>Points Possible</b>
             <font color="#FF0000">*</font>
         </string>
+        <string name="points_possible_hint">Enter total points possible</string>
 
         <string name="grade_weight">
             <b>Grade Weight</b>
         </string>
+        <string name="grade_weight_hint">Enter grade weight (e.g., 20)</string>
 
         <string name="due_date">
             <b>Due Date</b>
             <font color="#FF0000">*</font>
         </string>
+        <string name="due_date_hint">Tap to select due date</string>
+
+        <string name="save_assignment">SAVE ASSIGNMENT</string>
+        <string name="delete_assignment">DELETE ASSIGNMENT</string>
+
 
     <!--Notification Strings -->
         <string name="notification_points_possible">Points: %1$d</string>

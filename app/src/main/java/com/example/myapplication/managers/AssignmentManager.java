@@ -91,6 +91,18 @@ public class AssignmentManager {
         }
     }
 
+    public void updateAssignment(String oldAssignmentName, Assignment updatedAssignment) {
+        for(int i = 0; i < assignments.size(); i++){
+            Assignment current = assignments.get(i);
+
+            if(current.getName().equals(oldAssignmentName)) {
+                assignments.set(i, updatedAssignment);
+                saveAssignments();
+                return;
+            }
+        }
+    }
+
     /**
      * Returns a list of assignments with due dates after the current date.
      *
