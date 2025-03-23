@@ -53,7 +53,6 @@ public class CalendarUtils{
             Calendar day = (Calendar) weekStart.clone();
             day.add(Calendar.DAY_OF_MONTH, i);
             daysInWeek.add(day);
-            weekStart.add(Calendar.DAY_OF_MONTH, 1);
         }
 
         return daysInWeek;
