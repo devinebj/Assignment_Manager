@@ -66,12 +66,9 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        // Reload courses from the settings on resume
-        courses = SettingsManager.getInstance(requireContext()).loadCourses();
-        courseAdapter.updateData(courses);
+        updateCourses();
     }
 
-    // Find and initialize all the view components
     private void initializeViews(){
         addClassButton = rootView.findViewById(R.id.add_course_button);
         daysToNotifyET = rootView.findViewById(R.id.days_to_notify_et);
@@ -81,19 +78,16 @@ public class SettingsFragment extends Fragment {
         daysToNotifyET.setText(String.valueOf(SettingsManager.getInstance(requireContext()).loadDaysToNotify()));
     }
 
-    // Setup the RecyclerView with its adapter and layout manager.
     private void setupRecyclerView() {
         courseAdapter = new CourseAdapter(requireContext(), courses);
         coursesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         coursesRecyclerView.setAdapter(courseAdapter);
     }
 
-    // Attach a click listener to the "Add Class" button to show the popup.
     private void setupAddClassButton(LayoutInflater inflater){
         addClassButton.setOnClickListener(v -> showAddCoursePopup(inflater));
     }
 
-    // Inflate and display the popup window for adding a new course
     private void showAddCoursePopup(final LayoutInflater inflater){
         View popupView = inflater.inflate(R.layout.popout_add_course, (ViewGroup) rootView, false);
         PopupWindow popupWindow = createPopupWindow(popupView);
@@ -101,7 +95,6 @@ public class SettingsFragment extends Fragment {
         setupPopupButton(popupView, popupWindow);
     }
 
-    // Create and show a PopupWindow with the specified view
     @NonNull
     private PopupWindow createPopupWindow(View popupView){
         PopupWindow popupWindow = new PopupWindow(
@@ -117,20 +110,16 @@ public class SettingsFragment extends Fragment {
         return popupWindow;
     }
 
-    // Restore the background brightness when the popup is dismissed
     private void setupPopupDismissListener(@NonNull PopupWindow popupWindow) {
         popupWindow.setOnDismissListener(this::restoreBackground);
     }
 
-    // Set up the button inside the popup window to handle adding a new course
     private void setupPopupButton(@NonNull View popupView, PopupWindow popupWindow){
         Button popupButton = popupView.findViewById(R.id.popup_Button);
         EditText popupEditText = popupView.findViewById(R.id.popup_EditText);
-
         popupButton.setOnClickListener(v -> handleAddCourse(popupEditText, popupWindow));
     }
 
-    // Handle the logic when adding a new course from the popup
     private void handleAddCourse(EditText popupEditText, PopupWindow popupWindow){
         String courseName = popupEditText.getText().toString().trim();
         if (courseName.isEmpty()){
@@ -144,7 +133,6 @@ public class SettingsFragment extends Fragment {
         }
     }
 
-    // Setup a focus change listener for the daysToNotify EditText to validate input
     private void setupDaysToNotifyEditText() {
         daysToNotifyET.setOnFocusChangeListener((v, hasFocus) -> {
             if(!hasFocus) {
@@ -153,9 +141,7 @@ public class SettingsFragment extends Fragment {
         });
     }
 
-    // Validate the user input for the days-to-notify field
     private void validateDaysToNotify(){
-        final int MAX_NUMBER = 7;
         String input = daysToNotifyET.getText().toString();
 
         if(TextUtils.isEmpty(input)){
@@ -166,10 +152,10 @@ public class SettingsFragment extends Fragment {
         try {
             int number = Integer.parseInt(input);
 
-            if(number > MAX_NUMBER){
-                showToast("This number is too large! Max number is " + MAX_NUMBER);
-                daysToNotifyET.setText(String.valueOf(MAX_NUMBER));
-                daysToNotifyET.setSelection(String.valueOf(MAX_NUMBER).length());
+            if(number > MAX_DAYS_TO_NOTIFY){
+                showToast("This number is too large! Max number is " + MAX_DAYS_TO_NOTIFY);
+                daysToNotifyET.setText(String.valueOf(MAX_DAYS_TO_NOTIFY));
+                daysToNotifyET.setSelection(String.valueOf(MAX_DAYS_TO_NOTIFY).length());
             } else {
                 daysToNotifyET.clearFocus();
                 rootView.requestFocus();
@@ -180,21 +166,23 @@ public class SettingsFragment extends Fragment {
         }
     }
 
-    // Dim the background when the popup is shown
+    private void updateCourses(){
+        courses = settingsManager.loadCourses();
+        courseAdapter.updateData(courses);
+    }
+
     private void dimBackground(){
         WindowManager.LayoutParams params = getActivity().getWindow().getAttributes();
         params.alpha = 0.5f;
         getActivity().getWindow().setAttributes(params);
     }
 
-    // Restore the background brightness when the popup is dismissed
     private void restoreBackground(){
         WindowManager.LayoutParams params = getActivity().getWindow().getAttributes();
         params.alpha = 1f;
         getActivity().getWindow().setAttributes(params);
     }
 
-    // Utility method to show a short Toast message
     private void showToast(String message){
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }

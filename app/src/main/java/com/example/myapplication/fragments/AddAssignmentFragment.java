@@ -26,20 +26,20 @@ import com.example.myapplication.managers.AssignmentManager;
 import com.example.myapplication.managers.CourseManager;
 import com.example.myapplication.models.Assignment;
 import com.example.myapplication.models.Course;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 public class AddAssignmentFragment extends Fragment {
     private String originalAssignmentName = null;
     private View rootView;
     private Spinner courseSpinner;
     private EditText assignmentNameEditText, pointsPossibleEditText, gradeWeightEditText, dueDateEditText;
-    private Button addAssignmentButton;
+    private MaterialButton addAssignmentButton, deleteAssignmentButton;
     private ArrayAdapter<String> spinnerAdapter;
     private TextView assignmentNameLabel, dueDateLabel, pointsPossibleLabel;
     private AssignmentManager assignmentManager;
@@ -50,11 +50,9 @@ public class AddAssignmentFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_add, container, false);
-
         assignmentManager = AssignmentManager.getInstance(requireContext());
 
         initializeViews();
-
         setupSpinner();
         updateSpinner(CourseManager.getInstance(requireContext()).getCourses());
         setupDueDatePicker();
@@ -63,7 +61,6 @@ public class AddAssignmentFragment extends Fragment {
         if(args != null && "edit".equals(args.getString("mode"))) {
             populateFieldsForEdit(args);
         }
-
         setupAddAssignmentButton();
 
         return rootView;
@@ -78,6 +75,9 @@ public class AddAssignmentFragment extends Fragment {
         assignmentNameLabel = rootView.findViewById(R.id.assignment_name_tv);
         pointsPossibleLabel = rootView.findViewById(R.id.points_possible_tv);
         dueDateLabel = rootView.findViewById(R.id.due_date_tv);
+        // Default button for adding an assignment
+        addAssignmentButton = rootView.findViewById(R.id.add_assignment_button);
+        deleteAssignmentButton = rootView.findViewById(R.id.delete_assignment_button);
     }
 
     private void setupSpinner() {
@@ -110,7 +110,6 @@ public class AddAssignmentFragment extends Fragment {
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
-
             DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
                     (view, selectedYear, selectedMonth, selectedDay) -> {
                         // Note: selectedMonth is zero-indexed.
@@ -134,10 +133,13 @@ public class AddAssignmentFragment extends Fragment {
         courseSpinner.setSelection(spinnerPosition);
 
         TextView header = rootView.findViewById(R.id.assignment_header_tv);
-        header.setText("Edit Assignment");
+        if(header != null){
+            header.setText("Edit Assignment");
+        }
 
-        addAssignmentButton = rootView.findViewById(R.id.save_assignment_button);
+        // Use the save button for edit
         addAssignmentButton.setText("Save Changes");
+        deleteAssignmentButton.setVisibility(View.VISIBLE);
     }
 
     private void setupAddAssignmentButton() {
@@ -166,14 +168,7 @@ public class AddAssignmentFragment extends Fragment {
                 return;
             }
 
-            Assignment assignment = new Assignment(
-                    course,
-                    assignmentName,
-                    pointsPossible,
-                    gradeWeight,
-                    dueDate
-            );
-
+            Assignment assignment = new Assignment(course, assignmentName, pointsPossible, gradeWeight, dueDate);
             if(isEditMode){
                 assignmentManager.updateAssignment(originalAssignmentName, assignment);
                 showToast("Assignment Updated!");
@@ -204,6 +199,9 @@ public class AddAssignmentFragment extends Fragment {
             isValid = false;
         }
 
+        if(courseSpinner.getSelectedItem() == null) {
+            isValid = false;
+        }
         return isValid;
     }
 
@@ -229,14 +227,18 @@ public class AddAssignmentFragment extends Fragment {
 
     private void markRequired(TextView label, String baseText){
         SpannableString spannable = new SpannableString(baseText);
-        spannable.setSpan(new ForegroundColorSpan(Color.RED), 0, baseText.length(), SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new ForegroundColorSpan(Color.RED), 0, baseText.length(),
+                SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
         label.setText(spannable);
     }
 
     private void resetRequired(TextView label, String baseText) {
         SpannableString spannable = new SpannableString(baseText);
-        spannable.setSpan(new ForegroundColorSpan(Color.BLACK), 0, baseText.length() - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannable.setSpan(new ForegroundColorSpan(Color.RED), baseText.length() - 1, baseText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int starIndex = baseText.length() - 1;
+        spannable.setSpan(new ForegroundColorSpan(Color.BLACK), 0, starIndex,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new ForegroundColorSpan(Color.RED), starIndex, baseText.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         label.setText(spannable);
     }
 }

@@ -2,7 +2,6 @@ package com.example.myapplication.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +13,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.R;
 import com.example.myapplication.managers.CalendarUtils;
 
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder> {
     private final Context context;
-    private ArrayList<Calendar> days;
+    private List<Calendar> days;
     private final OnItemListener onItemListener;
 
-    public CalendarAdapter(Context context, ArrayList<Calendar> days, OnItemListener onItemListener) {
+    public CalendarAdapter(Context context, List<Calendar> days, OnItemListener onItemListener) {
         this.context = context;
         this.days = days;
         this.onItemListener = onItemListener;
@@ -31,38 +30,36 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
     @NonNull
     @Override
     public CalendarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cell_calendar, parent, false);
-
-        if(context == null){
-            throw new IllegalStateException("Context is null in CalendarAdapter");
-        }
-
-        return new CalendarViewHolder(view, onItemListener, days);
+        View view = LayoutInflater.from(context).inflate(R.layout.cell_calendar, parent, false);
+        return new CalendarViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CalendarViewHolder holder, int position) {
-        final Calendar date = days.get(position);
-
+        Calendar date = days.get(position);
         if (date != null) {
+            // Set day of month text.
             holder.dayOfMonth.setText(String.valueOf(date.get(Calendar.DAY_OF_MONTH)));
-            Log.d("CalendarAdapter", "Date set: " + date.getTime());
 
+            // Highlight the selected date.
             if (CalendarUtils.isSameDate(date, CalendarUtils.selectedDate)) {
                 holder.parentView.setBackgroundColor(Color.LTGRAY);
             } else {
                 holder.parentView.setBackgroundColor(Color.TRANSPARENT);
             }
 
+            // Set text color based on whether the date is in the current month.
             if (date.get(Calendar.MONTH) == CalendarUtils.selectedDate.get(Calendar.MONTH)) {
                 holder.dayOfMonth.setTextColor(Color.BLACK);
             } else {
                 holder.dayOfMonth.setTextColor(Color.LTGRAY);
             }
+
+            // Set click listener directly here.
+            holder.itemView.setOnClickListener(v -> onItemListener.onItemClick(position, date));
         } else {
             holder.dayOfMonth.setText("");
             holder.parentView.setBackgroundColor(Color.TRANSPARENT);
-            Log.d("CalendarAdapter", "Null date at position: " + position);
         }
     }
 
@@ -71,7 +68,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         return days.size();
     }
 
-    public void updateCalendar(ArrayList<Calendar> newDays){
+    public void updateCalendar(List<Calendar> newDays) {
         this.days = newDays;
         notifyDataSetChanged();
     }
@@ -80,28 +77,14 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         void onItemClick(int position, Calendar date);
     }
 
-    public static class CalendarViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView dayOfMonth;
-        public View parentView;
-        private final OnItemListener onItemListener;
-        private final ArrayList<Calendar> days;
+    public static class CalendarViewHolder extends RecyclerView.ViewHolder {
+        TextView dayOfMonth;
+        View parentView;
 
-        public CalendarViewHolder(@NonNull View itemView, OnItemListener onItemListener, ArrayList<Calendar> days) {
+        public CalendarViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.onItemListener = onItemListener;
-            this.days = days;
             dayOfMonth = itemView.findViewById(R.id.cellDayText);
             parentView = itemView;
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
-            int position = getAdapterPosition();
-            if (position != RecyclerView.NO_POSITION && days.get(position) != null) {
-                Calendar date = days.get(position);
-                onItemListener.onItemClick(position, date);
-            }
         }
     }
 }

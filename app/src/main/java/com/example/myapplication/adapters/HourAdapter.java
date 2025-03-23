@@ -14,14 +14,15 @@ import com.example.myapplication.R;
 import com.example.myapplication.models.Event;
 import com.example.myapplication.models.HourEvent;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 public class HourAdapter extends BaseAdapter<HourEvent, HourAdapter.HourViewHolder> {
 
-    public HourAdapter(Context context, ArrayList<HourEvent> hourEvents){
+    private static final SimpleDateFormat HOUR_FORMAT = new SimpleDateFormat("HH:mm", Locale.US);
+
+    public HourAdapter(Context context, List<HourEvent> hourEvents){
         super(context, hourEvents);
     }
 
@@ -40,30 +41,29 @@ public class HourAdapter extends BaseAdapter<HourEvent, HourAdapter.HourViewHold
     }
 
     private void setHour(HourViewHolder holder, Calendar time){
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        holder.timeTV.setText(formatter.format(time.getTime()));
+        holder.timeTV.setText(HOUR_FORMAT.format(time.getTime()));
     }
 
     private void setEvents(HourViewHolder holder, List<Event> events) {
-        TextView[] eventTextViews = {holder.event1, holder.event2, holder.event3};
+        TextView[] eventViews = {holder.event1, holder.event2, holder.event3};
 
-        for (TextView eventTextView: eventTextViews) {
-            eventTextView.setVisibility(View.INVISIBLE);
+        // Hide all event views initially
+        for (TextView tv : eventViews) {
+            tv.setVisibility(View.INVISIBLE);
         }
 
-        for (int i = 0; i < Math.min(events.size(), 2); i++) {
-            setEvent(eventTextViews[i], events.get(i));
+        // Display the first two events (if available).
+        int eventsToShow = Math.min(events.size(), 2);
+        for(int i = 0; i < eventsToShow; i++) {
+            eventViews[i].setText(events.get(i).getName());
+            eventViews[i].setVisibility(View.VISIBLE);
         }
 
+        // If more events exist, show count on the third view.
         if(events.size() > 2) {
-            eventTextViews[2].setVisibility(View.VISIBLE);
-            eventTextViews[2].setText((events.size() - 2) + " More Events");
+            eventViews[2].setText((events.size() - 2) + " More Events");
+            eventViews[2].setVisibility(View.VISIBLE);
         }
-    }
-
-    private void setEvent(TextView textView, Event event){
-        textView.setText(event.getName());
-        textView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -83,4 +83,3 @@ public class HourAdapter extends BaseAdapter<HourEvent, HourAdapter.HourViewHold
         }
     }
 }
-

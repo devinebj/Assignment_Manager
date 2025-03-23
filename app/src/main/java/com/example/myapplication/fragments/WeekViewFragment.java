@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -17,38 +18,37 @@ import com.example.myapplication.adapters.AssignmentAdapter;
 import com.example.myapplication.adapters.CalendarAdapter;
 import com.example.myapplication.managers.AssignmentManager;
 import com.example.myapplication.managers.CalendarUtils;
-import com.example.myapplication.managers.EventManager;
 import com.example.myapplication.models.Assignment;
-import com.example.myapplication.models.Event;
-import com.example.myapplication.adapters.EventAdapter;
 import com.example.myapplication.R;
+
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 public class WeekViewFragment extends Fragment implements CalendarAdapter.OnItemListener {
     private TextView monthYearText;
     private RecyclerView calendarRecyclerView, assignmentRecyclerView;
-    private Button prevWeekBtn, nextWeekBtn, addEventBtn, dayViewBtn, monthViewBtn;
+    private Button prevWeekBtn, nextWeekBtn, addAssignmentBtn, dayViewBtn, monthViewBtn;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_weekly, container, false);
-        initWidgets(view);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_weekly, container, false);
+        initializeViews(rootView);
         setWeekView();
         setupListeners();
-        return view;
+        return rootView;
     }
 
-    private void initWidgets(View view) {
+    private void initializeViews(View view) {
         monthYearText = view.findViewById(R.id.monthYearTV);
         calendarRecyclerView = view.findViewById(R.id.calendarRecyclerView);
         assignmentRecyclerView = view.findViewById(R.id.week_assignments_rv);
 
         prevWeekBtn = view.findViewById(R.id.prevWeekBtn);
         nextWeekBtn = view.findViewById(R.id.nextWeekBtn);
-        addEventBtn = view.findViewById(R.id.add_event_button);
+        addAssignmentBtn = view.findViewById(R.id.add_event_button);
         dayViewBtn = view.findViewById(R.id.day_view_button);
         monthViewBtn = view.findViewById(R.id.month_view_button);
     }
@@ -56,7 +56,7 @@ public class WeekViewFragment extends Fragment implements CalendarAdapter.OnItem
     private void setupListeners() {
        prevWeekBtn.setOnClickListener(v -> previousWeekAction());
        nextWeekBtn.setOnClickListener(v -> nextWeekAction());
-       addEventBtn.setOnClickListener(v -> switchFragment(new AddAssignmentFragment()));
+       addAssignmentBtn.setOnClickListener(v -> switchFragment(new AddAssignmentFragment()));
        dayViewBtn.setOnClickListener(v -> switchFragment(new DailyViewFragment()));
        monthViewBtn.setOnClickListener(v -> switchFragment(new HomeFragment()));
     }
@@ -71,8 +71,8 @@ public class WeekViewFragment extends Fragment implements CalendarAdapter.OnItem
 
     private void setWeekView() {
         monthYearText.setText(CalendarUtils.formattedDate(CalendarUtils.selectedDate));
-        ArrayList<Calendar> weekDays = CalendarUtils.daysInWeekArray(CalendarUtils.selectedDate);
 
+        ArrayList<Calendar> weekDays = CalendarUtils.daysInWeekArray(CalendarUtils.selectedDate);
         calendarRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 7));
         CalendarAdapter calendarAdapter = new CalendarAdapter(requireContext(), weekDays, this);
         calendarRecyclerView.setAdapter(calendarAdapter);
@@ -84,7 +84,6 @@ public class WeekViewFragment extends Fragment implements CalendarAdapter.OnItem
         AssignmentManager assignmentManager = AssignmentManager.getInstance(requireContext());
         ArrayList<Assignment> weeklyAssignments = new ArrayList<>();
 
-        //Get start and end of the current selected week
         Calendar weekStart = (Calendar) CalendarUtils.selectedDate.clone();
         weekStart.set(Calendar.DAY_OF_WEEK, weekStart.getFirstDayOfWeek());
         Calendar weekEnd = (Calendar) weekStart.clone();

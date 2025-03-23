@@ -21,17 +21,13 @@ import com.example.myapplication.models.Assignment;
 import java.util.ArrayList;
 import java.util.Locale;
 
-/**
- * Adapter for displaying and managing a list of assignments.
- */
 public class AssignmentAdapter extends BaseAdapter<Assignment, AssignmentAdapter.AssignmentViewHolder> {
 
-    /**
-     * Constructor for AssignmentAdapter.
-     *
-     * @param context     the context for inflating views.
-     * @param assignments the list of assignments to display.
-     */
+    private static final SimpleDateFormat DISPLAY_DATE_FORMAT =
+            new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+    private static final SimpleDateFormat EDIT_DATE_FORMAT =
+            new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+
     public AssignmentAdapter(Context context, ArrayList<Assignment> assignments) {
         super(context, assignments);
     }
@@ -47,20 +43,12 @@ public class AssignmentAdapter extends BaseAdapter<Assignment, AssignmentAdapter
     public void onBindViewHolder(@NonNull AssignmentViewHolder holder, int position) {
         Assignment assignment = items.get(position);
 
-        // Populate views with assignment data
         holder.assignmentName.setText(assignment.getName());
         holder.courseName.setText(assignment.getCourse());
-
-        //Format due date
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
-        String dueDateStr = "Due: " + dateFormat.format(assignment.getDueDate());
-        holder.dueDate.setText(dueDateStr);
-
-        //Set points and weight
+        holder.dueDate.setText("Due: " + DISPLAY_DATE_FORMAT.format(assignment.getDueDate()));
         holder.pointsPossible.setText(context.getString(R.string.notification_points_possible));
         holder.gradeWeight.setText(context.getString(R.string.notification_grade_weight));
 
-        // Handle complete button click to remove assignment
         holder.completeButton.setOnClickListener(v -> {
             int pos = holder.getAdapterPosition();
             if (pos != RecyclerView.NO_POSITION) {
@@ -75,8 +63,7 @@ public class AssignmentAdapter extends BaseAdapter<Assignment, AssignmentAdapter
            bundle.putString("assignmentName", assignment.getName());
            bundle.putInt("pointsPossible", assignment.getPointsPossible());
            bundle.putInt("gradeWeight", assignment.getGradeWeight());
-           SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
-           bundle.putString("dueDate", simpleDateFormat.format(assignment.getDueDate()));
+           bundle.putString("dueDate", EDIT_DATE_FORMAT.format(assignment.getDueDate()));
 
            AddAssignmentFragment fragment = new AddAssignmentFragment();
            fragment.setArguments(bundle);
@@ -89,27 +76,19 @@ public class AssignmentAdapter extends BaseAdapter<Assignment, AssignmentAdapter
         });
     }
 
-    /**
-     * Handles item removal from persistent storage.
-     *
-     * @param item the assignment being removed.
-     */
     @Override
     protected void onItemRemoved(Assignment item) {
         AssignmentManager.getInstance(context).removeAssignment(item);
     }
 
-    /**
-     * ViewHolder for assignment items.
-     */
     public static class AssignmentViewHolder extends RecyclerView.ViewHolder {
-        private final TextView assignmentName;
-        private final TextView courseName;
-        private final TextView dueDate;
-        private final TextView gradeWeight;
-        private final TextView pointsPossible;
-        private final Button completeButton;
-        private final Button editButton;
+        TextView assignmentName;
+        TextView courseName;
+        TextView dueDate;
+        TextView gradeWeight;
+        TextView pointsPossible;
+        Button completeButton;
+        Button editButton;
 
         public AssignmentViewHolder(@NonNull View itemView) {
             super(itemView);

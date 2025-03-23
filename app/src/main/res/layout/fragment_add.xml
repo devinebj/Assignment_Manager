@@ -138,7 +138,7 @@
 
             <!-- Save Assignment Button -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/save_assignment_button"
+                android:id="@+id/add_assignment_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/save_assignment"

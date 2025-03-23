@@ -37,12 +37,14 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         initViews(rootView);
         setupCalendar();
         setupListeners();
-        setMonthlyAssignments();
+        updateMonthlyAssignments();
         return rootView;
     }
 
@@ -63,6 +65,7 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
 
         GridLayoutManager layoutManager = new GridLayoutManager(requireContext(), 7);
         calendarRecyclerView.setLayoutManager(layoutManager);
+
         calendarAdapter = new CalendarAdapter(getContext(), daysInMonthList, this);
         calendarRecyclerView.setAdapter(calendarAdapter);
     }
@@ -73,14 +76,12 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
 
         prevMonthBtn.setOnClickListener(v -> {
             currentCalendar.add(Calendar.MONTH, -1);
-            updateMonthYearDisplay();
-            updateCalendar();
+            updateCalendarAndDisplay();
         });
 
         nextMonthBtn.setOnClickListener(v -> {
             currentCalendar.add(Calendar.MONTH, 1);
-            updateMonthYearDisplay();
-            updateCalendar();
+            updateCalendarAndDisplay();
         });
     }
 
@@ -104,7 +105,13 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         calendarAdapter.notifyDataSetChanged();
     }
 
-    private void setMonthlyAssignments() {
+    private void updateCalendarAndDisplay(){
+        updateMonthYearDisplay();
+        updateCalendar();
+        updateMonthlyAssignments();
+    }
+
+    private void updateMonthlyAssignments() {
         AssignmentManager assignmentManager = AssignmentManager.getInstance(requireContext());
         ArrayList<Assignment> monthlyAssignments = new ArrayList<>();
 
@@ -131,6 +138,6 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
     public void onItemClick(int position, Calendar date) {
         CalendarUtils.selectedDate = date;
         updateCalendar();
-        setMonthlyAssignments();
+        updateMonthlyAssignments();
     }
 }

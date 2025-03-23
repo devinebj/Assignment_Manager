@@ -15,24 +15,14 @@ import com.example.myapplication.R;
 import com.example.myapplication.managers.AssignmentManager;
 import com.example.myapplication.models.Assignment;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-/**
- * Adapter for displaying assignment notifications in a RecyclerView.
- */
 public class NotificationAdapter extends BaseAdapter<Assignment, NotificationAdapter.NotificationViewHolder> {
 
-    // Static date formatter for displaying due dates in "MM/dd/yyyy" format.
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
 
-    /**
-     * Constructor for the NotificationAdapter.
-     *
-     * @param context     the context for inflating layouts.
-     * @param assignments the list of assignments to display.
-     */
-    public NotificationAdapter(Context context, ArrayList<Assignment> assignments) {
+    public NotificationAdapter(Context context, List<Assignment> assignments) {
         super(context, assignments);
     }
 
@@ -46,8 +36,6 @@ public class NotificationAdapter extends BaseAdapter<Assignment, NotificationAda
     @Override
     public void onBindViewHolder(@NonNull NotificationViewHolder holder, int position) {
         Assignment assignment = items.get(position);
-
-        // Format the assignment's due date.
         String dueDateString = DATE_FORMAT.format(assignment.getDueDate());
 
         holder.assignmentName.setText(assignment.getName());
@@ -70,9 +58,6 @@ public class NotificationAdapter extends BaseAdapter<Assignment, NotificationAda
         AssignmentManager.getInstance(context).removeAssignment(item);
     }
 
-    /**
-     * ViewHolder class for the NotificationAdapter.
-     */
     public static class NotificationViewHolder extends RecyclerView.ViewHolder {
         TextView assignmentName;
         TextView courseName;

@@ -34,15 +34,14 @@ public class DailyViewFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_daily, container, false);
         eventManager = new EventManager();
         initWidgets(view);
         setupListeners();
-
-        hourlyRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        assignmentRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
+        setupRecyclerViews();
         setDayView();
         return view;
     }
@@ -81,6 +80,11 @@ public class DailyViewFragment extends Fragment {
         });
     }
 
+    private void setupRecyclerViews() {
+        hourlyRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        assignmentRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+    }
+
     private void switchFragment(Fragment fragment){
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
@@ -91,10 +95,8 @@ public class DailyViewFragment extends Fragment {
 
     private void setDayView() {
         monthDayText.setText(CalendarUtils.formattedDate(CalendarUtils.selectedDate));
-
         String dayOfWeek = CalendarUtils.selectedDate.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
         dayOfWeekTV.setText(dayOfWeek);
-
         setHourAdapter();
         setAssignmentAdapter();
     }
