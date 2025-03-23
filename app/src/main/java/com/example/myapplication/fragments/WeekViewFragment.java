@@ -12,9 +12,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.myapplication.adapters.AssignmentAdapter;
 import com.example.myapplication.adapters.CalendarAdapter;
+import com.example.myapplication.managers.AssignmentManager;
 import com.example.myapplication.managers.CalendarUtils;
 import com.example.myapplication.managers.EventManager;
+import com.example.myapplication.models.Assignment;
 import com.example.myapplication.models.Event;
 import com.example.myapplication.adapters.EventAdapter;
 import com.example.myapplication.R;
@@ -24,7 +28,7 @@ import java.util.Date;
 
 public class WeekViewFragment extends Fragment implements CalendarAdapter.OnItemListener {
     private TextView monthYearText;
-    private RecyclerView calendarRecyclerView, eventRecyclerView;
+    private RecyclerView calendarRecyclerView, assignmentRecyclerView;
     private Button prevWeekBtn, nextWeekBtn, addEventBtn, dayViewBtn, monthViewBtn;
 
     @Nullable
@@ -40,7 +44,7 @@ public class WeekViewFragment extends Fragment implements CalendarAdapter.OnItem
     private void initWidgets(View view) {
         monthYearText = view.findViewById(R.id.monthYearTV);
         calendarRecyclerView = view.findViewById(R.id.calendarRecyclerView);
-        eventRecyclerView = view.findViewById(R.id.eventRecyclerView);
+        assignmentRecyclerView = view.findViewById(R.id.week_assignments_rv);
 
         prevWeekBtn = view.findViewById(R.id.prevWeekBtn);
         nextWeekBtn = view.findViewById(R.id.nextWeekBtn);
@@ -73,18 +77,31 @@ public class WeekViewFragment extends Fragment implements CalendarAdapter.OnItem
         CalendarAdapter calendarAdapter = new CalendarAdapter(requireContext(), weekDays, this);
         calendarRecyclerView.setAdapter(calendarAdapter);
 
-        setEventAdapter();
+        setWeeklyAssignmentsAdapter();
     }
 
-    private void setEventAdapter() {
-        EventManager eventManager = new EventManager();
-        Date selectedDate = CalendarUtils.selectedDate.getTime();
+    private void setWeeklyAssignmentsAdapter() {
+        AssignmentManager assignmentManager = AssignmentManager.getInstance(requireContext());
+        ArrayList<Assignment> weeklyAssignments = new ArrayList<>();
 
-        ArrayList<Event> dailyEvents = new ArrayList<>(eventManager.getEventsForDate(selectedDate));
+        //Get start and end of the current selected week
+        Calendar weekStart = (Calendar) CalendarUtils.selectedDate.clone();
+        weekStart.set(Calendar.DAY_OF_WEEK, weekStart.getFirstDayOfWeek());
+        Calendar weekEnd = (Calendar) weekStart.clone();
+        weekEnd.add(Calendar.DAY_OF_MONTH, 6);
 
-        eventRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        EventAdapter eventAdapter = new EventAdapter(requireContext(), dailyEvents);
-        eventRecyclerView.setAdapter(eventAdapter);
+        for (Assignment  assignment : assignmentManager.getAssignments()){
+            Calendar dueDate = Calendar.getInstance();
+            dueDate.setTime(assignment.getDueDate());
+
+            if(!dueDate.before(weekStart) && !dueDate.after(weekEnd)) {
+                weeklyAssignments.add(assignment);
+            }
+        }
+
+        assignmentRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        AssignmentAdapter assignmentAdapter = new AssignmentAdapter(requireContext(), weeklyAssignments);
+        assignmentRecyclerView.setAdapter(assignmentAdapter);
     }
 
     private void previousWeekAction() {

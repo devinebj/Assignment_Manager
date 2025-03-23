@@ -1,6 +1,7 @@
 package com.example.myapplication.adapters;
 
 import android.content.Context;
+import android.icu.text.SimpleDateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.example.myapplication.managers.AssignmentManager;
 import com.example.myapplication.models.Assignment;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Adapter for displaying and managing a list of assignments.
@@ -46,6 +48,15 @@ public class AssignmentAdapter extends BaseAdapter<Assignment, AssignmentAdapter
         holder.assignmentName.setText(assignment.getName());
         holder.courseName.setText(assignment.getCourse());
 
+        //Format due date
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+        String dueDateStr = "Due: " + dateFormat.format(assignment.getDueDate());
+        holder.dueDate.setText(dueDateStr);
+
+        //Set points and weight
+        holder.pointsPossible.setText(context.getString(R.string.notification_points_possible));
+        holder.gradeWeight.setText(context.getString(R.string.notification_grade_weight));
+
         // Handle complete button click to remove assignment
         holder.completeButton.setOnClickListener(v -> {
             int pos = holder.getAdapterPosition();
@@ -71,6 +82,9 @@ public class AssignmentAdapter extends BaseAdapter<Assignment, AssignmentAdapter
     public static class AssignmentViewHolder extends RecyclerView.ViewHolder {
         private final TextView assignmentName;
         private final TextView courseName;
+        private final TextView dueDate;
+        private final TextView gradeWeight;
+        private final TextView pointsPossible;
         private final Button completeButton;
 
         public AssignmentViewHolder(@NonNull View itemView) {
@@ -78,6 +92,9 @@ public class AssignmentAdapter extends BaseAdapter<Assignment, AssignmentAdapter
             assignmentName = itemView.findViewById(R.id.cell_assignment_name_tv);
             courseName = itemView.findViewById(R.id.cell_assignment_course_tv);
             completeButton = itemView.findViewById(R.id.cell_assignment_complete_button);
+            gradeWeight = itemView.findViewById(R.id.cell_assignment_weight_tv);
+            pointsPossible = itemView.findViewById(R.id.cell_assignment_points_tv);
+            dueDate = itemView.findViewById(R.id.cell_assignment_due_date_tv);
         }
     }
 }

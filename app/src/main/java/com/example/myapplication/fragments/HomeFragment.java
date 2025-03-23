@@ -13,11 +13,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.adapters.AssignmentAdapter;
 import com.example.myapplication.adapters.CalendarAdapter;
+import com.example.myapplication.managers.AssignmentManager;
 import com.example.myapplication.managers.CalendarUtils;
+import com.example.myapplication.models.Assignment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,7 +29,7 @@ import java.util.Locale;
 
 public class HomeFragment extends Fragment implements CalendarAdapter.OnItemListener {
     private TextView monthYearTV;
-    private RecyclerView calendarRecyclerView;
+    private RecyclerView calendarRecyclerView, monthAssignmentRecyclerView;
     private Button prevMonthBtn, nextMonthBtn, dayViewBtn, weekViewBtn;
     private Calendar currentCalendar;
     private CalendarAdapter calendarAdapter;
@@ -38,12 +42,14 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         initViews(rootView);
         setupCalendar();
         setupListeners();
+        setMonthlyAssignments();
         return rootView;
     }
 
     private void initViews(View view) {
         monthYearTV = view.findViewById(R.id.monthYearTV);
         calendarRecyclerView = view.findViewById(R.id.calendarRecyclerView);
+        monthAssignmentRecyclerView = view.findViewById(R.id.month_assignments_rv);
         prevMonthBtn = view.findViewById(R.id.prevMonthBtn);
         nextMonthBtn = view.findViewById(R.id.nextMonthBtn);
         dayViewBtn = view.findViewById(R.id.day_view_button);
@@ -54,11 +60,6 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         currentCalendar = Calendar.getInstance();
         updateMonthYearDisplay();
         daysInMonthList = CalendarUtils.daysInMonthArray();
-
-        Log.d("CalendarDebug", "Days in month list size: " + daysInMonthList.size());
-        for(Calendar day : daysInMonthList){
-            Log.d("CalendarDebug", day != null ? day.getTime().toString() : "NULL");
-        }
 
         GridLayoutManager layoutManager = new GridLayoutManager(requireContext(), 7);
         calendarRecyclerView.setLayoutManager(layoutManager);
@@ -103,9 +104,33 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         calendarAdapter.notifyDataSetChanged();
     }
 
+    private void setMonthlyAssignments() {
+        AssignmentManager assignmentManager = AssignmentManager.getInstance(requireContext());
+        ArrayList<Assignment> monthlyAssignments = new ArrayList<>();
+
+        Calendar monthStart = (Calendar) currentCalendar.clone();
+        monthStart.set(Calendar.DAY_OF_MONTH, 1);
+        Calendar monthEnd = (Calendar) monthStart.clone();
+        monthEnd.set(Calendar.DAY_OF_MONTH, monthStart.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+        for (Assignment assignment : assignmentManager.getAssignments()) {
+            Calendar dueDate = Calendar.getInstance();
+            dueDate.setTime(assignment.getDueDate());
+
+            if(!dueDate.before(monthStart) && !dueDate.after(monthEnd)) {
+                monthlyAssignments.add(assignment);
+            }
+        }
+
+        monthAssignmentRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        AssignmentAdapter adapter = new AssignmentAdapter(requireContext(), monthlyAssignments);
+        monthAssignmentRecyclerView.setAdapter(adapter);
+    }
+
     @Override
     public void onItemClick(int position, Calendar date) {
         CalendarUtils.selectedDate = date;
         updateCalendar();
+        setMonthlyAssignments();
     }
 }

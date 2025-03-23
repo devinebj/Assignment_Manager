@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.adapters.AssignmentAdapter;
@@ -26,9 +27,9 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class DailyViewFragment extends Fragment {
-    private Button weekViewBtn, monthViewBtn, addEventBtn;
+    private Button weekViewBtn, monthViewBtn, addEventBtn, prevDayBtn, nextDayBtn;
     private TextView monthDayText, dayOfWeekTV;
-    private RecyclerView dayRecyclerView;
+    private RecyclerView assignmentRecyclerView, hourlyRecyclerView;
     private EventManager eventManager;
 
     @Nullable
@@ -38,6 +39,10 @@ public class DailyViewFragment extends Fragment {
         eventManager = new EventManager();
         initWidgets(view);
         setupListeners();
+
+        hourlyRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        assignmentRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
         setDayView();
         return view;
     }
@@ -52,15 +57,28 @@ public class DailyViewFragment extends Fragment {
         addEventBtn = view.findViewById(R.id.add_event_button);
         weekViewBtn = view.findViewById(R.id.week_view_button);
         monthViewBtn = view.findViewById(R.id.month_view_button);
+        prevDayBtn = view.findViewById(R.id.prevDayBtn);
+        nextDayBtn = view.findViewById(R.id.nextDayBtn);
         monthDayText = view.findViewById(R.id.monthDayText);
         dayOfWeekTV = view.findViewById(R.id.dayOfWeekTV);
-        dayRecyclerView = view.findViewById(R.id.day_view_rv);
+        assignmentRecyclerView = view.findViewById(R.id.assignments_view_rv);
+        hourlyRecyclerView = view.findViewById(R.id.hourly_view_rv);
     }
 
     private void setupListeners(){
         weekViewBtn.setOnClickListener(v -> switchFragment(new WeekViewFragment()));
         monthViewBtn.setOnClickListener(v -> switchFragment(new HomeFragment()));
         addEventBtn.setOnClickListener(v -> switchFragment(new AddAssignmentFragment()));
+
+        prevDayBtn.setOnClickListener(v -> {
+            CalendarUtils.selectedDate.add(Calendar.DAY_OF_MONTH, -1);
+            setDayView();
+        });
+
+        nextDayBtn.setOnClickListener(v -> {
+            CalendarUtils.selectedDate.add(Calendar.DAY_OF_MONTH, 1);
+            setDayView();
+        });
     }
 
     private void switchFragment(Fragment fragment){
@@ -83,7 +101,14 @@ public class DailyViewFragment extends Fragment {
 
     private void setHourAdapter() {
         HourAdapter hourAdapter = new HourAdapter(requireContext(), hourEventList());
-        dayRecyclerView.setAdapter(hourAdapter);
+        hourlyRecyclerView.setAdapter(hourAdapter);
+    }
+
+
+    private void setAssignmentAdapter() {
+        ArrayList<Assignment> assignmentsToday = getAssignmentForSelectedDay();
+        AssignmentAdapter assignmentAdapter = new AssignmentAdapter(requireContext(), assignmentsToday);
+        assignmentRecyclerView.setAdapter(assignmentAdapter);
     }
 
     private ArrayList<Assignment> getAssignmentForSelectedDay() {
@@ -100,12 +125,6 @@ public class DailyViewFragment extends Fragment {
         }
 
         return assignmentsDueToday;
-    }
-
-    private void setAssignmentAdapter() {
-        ArrayList<Assignment> assignmentsToday = getAssignmentForSelectedDay();
-        AssignmentAdapter assignmentAdapter = new AssignmentAdapter(requireContext(), assignmentsToday);
-        dayRecyclerView.setAdapter(assignmentAdapter);
     }
 
     private ArrayList<HourEvent> hourEventList() {
