@@ -9,14 +9,20 @@ import java.util.Locale;
 public class CalendarUtils{
     public static Calendar selectedDate = Calendar.getInstance();
 
+    private static final SimpleDateFormat MONTH_FORMAT = new SimpleDateFormat( "MMMM yyyy", Locale.US);
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd MM yyyy", Locale.US);
+    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("hh:mm:ss a", Locale.US);
+
+    public static String formattedMonth(Calendar date){
+        return MONTH_FORMAT.format(date.getTime());
+    }
+
     public static String formattedDate(Calendar date) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
-        return formatter.format(date.getTime());
+        return DATE_FORMAT.format(date.getTime());
     }
 
     public static String formattedTime(Calendar time) {
-        SimpleDateFormat formatter = new SimpleDateFormat("hh:mm:ss a", Locale.getDefault());
-        return formatter.format(time.getTime());
+        return TIME_FORMAT.format(time.getTime());
     }
 
     public static ArrayList<Calendar> daysInMonthArray() {
@@ -25,7 +31,6 @@ public class CalendarUtils{
         monthStart.set(Calendar.DAY_OF_MONTH, 1);
 
         int firstDayOfWeek = monthStart.get(Calendar.DAY_OF_WEEK) - 1;
-
         for(int i = 0; i < firstDayOfWeek; i++){
             daysInMonthArray.add(null);
         }

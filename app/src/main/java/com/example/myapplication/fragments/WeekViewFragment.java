@@ -70,7 +70,7 @@ public class WeekViewFragment extends Fragment implements CalendarAdapter.OnItem
     }
 
     private void setWeekView() {
-        monthYearText.setText(CalendarUtils.formattedDate(CalendarUtils.selectedDate));
+        monthYearText.setText(CalendarUtils.formattedMonth(CalendarUtils.selectedDate));
 
         ArrayList<Calendar> weekDays = CalendarUtils.daysInWeekArray(CalendarUtils.selectedDate);
         calendarRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 7));

@@ -94,7 +94,7 @@ public class DailyViewFragment extends Fragment {
     }
 
     private void setDayView() {
-        monthDayText.setText(CalendarUtils.formattedDate(CalendarUtils.selectedDate));
+        monthDayText.setText(CalendarUtils.formattedMonth(CalendarUtils.selectedDate));
         String dayOfWeek = CalendarUtils.selectedDate.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
         dayOfWeekTV.setText(dayOfWeek);
         setHourAdapter();

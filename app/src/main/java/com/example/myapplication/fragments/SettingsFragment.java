@@ -25,6 +25,7 @@ import com.example.myapplication.managers.CourseManager;
 import com.example.myapplication.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SettingsFragment extends Fragment {
 
@@ -38,7 +39,7 @@ public class SettingsFragment extends Fragment {
     CourseAdapter courseAdapter;
     CourseManager courseManager;
     SettingsManager settingsManager;
-    ArrayList<Course> courses;
+    List<Course> courses;
 
     // Constants
     private static final int MAX_DAYS_TO_NOTIFY = 7;

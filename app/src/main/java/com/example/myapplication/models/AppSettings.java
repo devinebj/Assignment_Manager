@@ -1,13 +1,14 @@
 package com.example.myapplication.models;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AppSettings {
-    private ArrayList<Assignment> assignments;
-    private ArrayList<Course> courses;
+    private List<Assignment> assignments;
+    private List<Course> courses;
     private int daysToNotify;
 
-    public AppSettings(ArrayList<Assignment> assignments, ArrayList<Course> courses, int daysToNotify){
+    public AppSettings(List<Assignment> assignments, List<Course> courses, int daysToNotify){
         this.assignments = assignments;
         this.courses = courses;
         this.daysToNotify = daysToNotify;
@@ -19,19 +20,19 @@ public class AppSettings {
         this.daysToNotify = 7;
     }
 
-    public ArrayList<Assignment> getAssignments() {
+    public List<Assignment> getAssignments() {
         return assignments;
     }
 
-    public void setAssignments(ArrayList<Assignment> assignments){
+    public void setAssignments(List<Assignment> assignments){
         this.assignments = assignments;
     }
 
-    public void setCourses(ArrayList<Course> courses){
+    public void setCourses(List<Course> courses){
         this.courses = courses;
     }
 
-    public ArrayList<Course> getCourses(){
+    public List<Course> getCourses(){
         return courses;
     }
 
