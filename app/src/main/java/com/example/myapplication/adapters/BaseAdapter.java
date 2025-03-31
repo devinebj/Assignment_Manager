@@ -30,10 +30,10 @@ public abstract class BaseAdapter<T, VH extends RecyclerView.ViewHolder> extends
 
     public void removeItem(int position) {
         if (position >= 0 && position < items.size()) {
-            T removedItem = items.get(position);
+            T removedItem = items.remove(position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, items.size() - position);
-            notifyDataSetChanged();
+            onItemRemoved(removedItem);
         }
     }
 

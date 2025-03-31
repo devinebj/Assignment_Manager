@@ -1,6 +1,7 @@
 package com.example.myapplication.fragments;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.graphics.Color;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
@@ -38,10 +39,10 @@ public class AddAssignmentFragment extends Fragment {
     private String originalAssignmentName = null;
     private View rootView;
     private Spinner courseSpinner;
-    private EditText assignmentNameEditText, pointsPossibleEditText, gradeWeightEditText, dueDateEditText;
+    private EditText assignmentNameEditText, pointsPossibleEditText, gradeWeightEditText, dueDateEditText, dueTimeEditText;
     private MaterialButton addAssignmentButton, deleteAssignmentButton;
     private ArrayAdapter<String> spinnerAdapter;
-    private TextView assignmentNameLabel, dueDateLabel, pointsPossibleLabel;
+    private TextView assignmentNameLabel, dueDateLabel, pointsPossibleLabel, dueTimeLabel;
     private AssignmentManager assignmentManager;
 
     @Nullable
@@ -56,6 +57,7 @@ public class AddAssignmentFragment extends Fragment {
         setupSpinner();
         updateSpinner(CourseManager.getInstance(requireContext()).getCourses());
         setupDueDatePicker();
+        setupDueTimePicker();
 
         Bundle args = getArguments();
         if(args != null && "edit".equals(args.getString("mode"))) {
@@ -72,10 +74,11 @@ public class AddAssignmentFragment extends Fragment {
         gradeWeightEditText = rootView.findViewById(R.id.grade_weight_et);
         courseSpinner = rootView.findViewById(R.id.courses_spinner);
         dueDateEditText = rootView.findViewById(R.id.due_date_et);
+        dueTimeEditText = rootView.findViewById(R.id.due_time_et);
         assignmentNameLabel = rootView.findViewById(R.id.assignment_name_tv);
         pointsPossibleLabel = rootView.findViewById(R.id.points_possible_tv);
         dueDateLabel = rootView.findViewById(R.id.due_date_tv);
-        // Default button for adding an assignment
+        dueTimeLabel = rootView.findViewById(R.id.due_time_tv);
         addAssignmentButton = rootView.findViewById(R.id.add_assignment_button);
         deleteAssignmentButton = rootView.findViewById(R.id.delete_assignment_button);
     }
@@ -121,12 +124,30 @@ public class AddAssignmentFragment extends Fragment {
         });
     }
 
+    private void setupDueTimePicker() {
+        dueTimeEditText.setOnClickListener(v -> {
+           Calendar calendar = Calendar.getInstance();
+           int hour = calendar.get(Calendar.HOUR_OF_DAY);
+           int minute = calendar.get(Calendar.MINUTE);
+           TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(),
+                   (view, selectedHour, selectedMinute) -> {
+                        String selectedTime = String.format(Locale.US, "%02d:%02d", selectedHour, selectedMinute);
+                        dueTimeEditText.setText(selectedTime);
+                   }, hour, minute, true);
+           timePickerDialog.show();
+        });
+    }
+
     private void populateFieldsForEdit(Bundle args){
         originalAssignmentName = args.getString("assignmentName");
         assignmentNameEditText.setText(args.getString("assignmentName"));
         pointsPossibleEditText.setText(String.valueOf(args.getInt("pointsPossible")));
         gradeWeightEditText.setText(String.valueOf(args.getInt("gradeWeight")));
         dueDateEditText.setText(args.getString("dueDate"));
+        if (args.getString("dueTime") != null) {
+            dueTimeEditText.setText(args.getString("dueTime"));
+        }
+
 
         String courseName = args.getString("courseName");
         int spinnerPosition = spinnerAdapter.getPosition(courseName);
@@ -153,6 +174,7 @@ public class AddAssignmentFragment extends Fragment {
                 resetRequired(assignmentNameLabel, "Assignment Name *");
                 resetRequired(pointsPossibleLabel, "Points Possible *");
                 resetRequired(dueDateLabel, "Due Date *");
+                resetRequired(dueTimeLabel, "Due Time *");
             }
 
             String course = courseSpinner.getSelectedItem().toString();
@@ -161,6 +183,7 @@ public class AddAssignmentFragment extends Fragment {
             int gradeWeight = gradeWeightEditText.getText().toString().isEmpty() ? 0
                     : Integer.parseInt(gradeWeightEditText.getText().toString());
             String dueDateString = dueDateEditText.getText().toString();
+            String dueTimeString = dueTimeEditText.getText().toString();
 
             Date dueDate = parseDateString(dueDateString);
             if (dueDate == null) {
@@ -168,7 +191,13 @@ public class AddAssignmentFragment extends Fragment {
                 return;
             }
 
-            Assignment assignment = new Assignment(course, assignmentName, pointsPossible, gradeWeight, dueDate);
+            Date dueTime = parseTimeString(dueTimeString);
+            if (dueTime == null){
+                showToast("Invalid time format: Please use HH:mm.");
+                return;
+            }
+
+            Assignment assignment = new Assignment(course, assignmentName, pointsPossible, gradeWeight, dueDate, dueTime);
             if(isEditMode){
                 assignmentManager.updateAssignment(originalAssignmentName, assignment);
                 showToast("Assignment Updated!");
@@ -209,6 +238,15 @@ public class AddAssignmentFragment extends Fragment {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
         try {
             return sdf.parse(dateString);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Date parseTimeString(String timeString) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.US);
+        try {
+            return simpleDateFormat.parse(timeString);
         } catch (Exception e) {
             return null;
         }

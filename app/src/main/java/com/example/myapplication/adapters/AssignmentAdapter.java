@@ -28,6 +28,11 @@ public class AssignmentAdapter extends BaseAdapter<Assignment, AssignmentAdapter
     private static final SimpleDateFormat EDIT_DATE_FORMAT =
             new SimpleDateFormat("MM/dd/yyyy", Locale.US);
 
+    private static final SimpleDateFormat DISPLAY_TIME_FORMAT =
+            new SimpleDateFormat("HH:mm", Locale.getDefault());
+    private static final SimpleDateFormat EDIT_TIME_FORMAT =
+            new SimpleDateFormat("HH:mm", Locale.US);
+
     public AssignmentAdapter(Context context, ArrayList<Assignment> assignments) {
         super(context, assignments);
     }
@@ -45,9 +50,21 @@ public class AssignmentAdapter extends BaseAdapter<Assignment, AssignmentAdapter
 
         holder.assignmentName.setText(assignment.getName());
         holder.courseName.setText(assignment.getCourse());
-        holder.dueDate.setText("Due: " + DISPLAY_DATE_FORMAT.format(assignment.getDueDate()));
         holder.pointsPossible.setText(context.getString(R.string.notification_points_possible));
         holder.gradeWeight.setText(context.getString(R.string.notification_grade_weight));
+
+        if(assignment.getDueDate() != null) {
+            holder.dueDate.setText("Due: " + DISPLAY_DATE_FORMAT.format(assignment.getDueDate()));
+        } else {
+            holder.dueDate.setText("Due: N/A");
+        }
+
+        if(assignment.getDueTime() != null) {
+            holder.dueTime.setText("Time: " + DISPLAY_TIME_FORMAT.format(assignment.getDueTime()));
+        } else {
+            holder.dueTime.setText("Time: N/A");
+        }
+
 
         holder.completeButton.setOnClickListener(v -> {
             int pos = holder.getAdapterPosition();
@@ -64,6 +81,7 @@ public class AssignmentAdapter extends BaseAdapter<Assignment, AssignmentAdapter
            bundle.putInt("pointsPossible", assignment.getPointsPossible());
            bundle.putInt("gradeWeight", assignment.getGradeWeight());
            bundle.putString("dueDate", EDIT_DATE_FORMAT.format(assignment.getDueDate()));
+           bundle.putString("dueTime", EDIT_TIME_FORMAT.format(assignment.getDueTime()));
 
            AddAssignmentFragment fragment = new AddAssignmentFragment();
            fragment.setArguments(bundle);
@@ -85,6 +103,7 @@ public class AssignmentAdapter extends BaseAdapter<Assignment, AssignmentAdapter
         TextView assignmentName;
         TextView courseName;
         TextView dueDate;
+        TextView dueTime;
         TextView gradeWeight;
         TextView pointsPossible;
         Button completeButton;
@@ -94,9 +113,10 @@ public class AssignmentAdapter extends BaseAdapter<Assignment, AssignmentAdapter
             super(itemView);
             assignmentName = itemView.findViewById(R.id.cell_assignment_name_tv);
             courseName = itemView.findViewById(R.id.cell_assignment_course_tv);
+            dueDate = itemView.findViewById(R.id.cell_assignment_due_date_tv);
+            dueTime  = itemView.findViewById(R.id.cell_assignment_due_time_tv);
             gradeWeight = itemView.findViewById(R.id.cell_assignment_weight_tv);
             pointsPossible = itemView.findViewById(R.id.cell_assignment_points_tv);
-            dueDate = itemView.findViewById(R.id.cell_assignment_due_date_tv);
             completeButton = itemView.findViewById(R.id.cell_assignment_complete_button);
             editButton = itemView.findViewById(R.id.cell_assignment_edit_button);
         }

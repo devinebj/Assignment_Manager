@@ -8,13 +8,15 @@ public class Assignment {
     private int pointsPossible;
     private int gradeWeight;
     private Date dueDate;
+    private Date dueTime;
 
-    public Assignment(String course, String assignmentName, int pointsPossible, int gradeWeight, Date dueDate){
+    public Assignment(String course, String assignmentName, int pointsPossible, int gradeWeight, Date dueDate, Date dueTime){
         this.course = course;
         this.assignmentName = assignmentName;
         this.pointsPossible = pointsPossible;
         this.gradeWeight = gradeWeight;
         this.dueDate = dueDate;
+        this.dueTime = dueTime;
     }
 
     public String getCourse() {
@@ -37,9 +39,7 @@ public class Assignment {
     public int getGradeWeight() {
         return gradeWeight;
     }
-    public void setGradeWeight(int gradeWeight) {
-        this.gradeWeight = gradeWeight;
-    }
+    public void setGradeWeight(int gradeWeight) { this.gradeWeight = gradeWeight; }
 
     public Date getDueDate() {
         return dueDate;
@@ -47,4 +47,7 @@ public class Assignment {
     public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
     }
+
+    public Date getDueTime() { return dueTime; }
+    public void setDueTime(Date dueTime) { this.dueTime = dueTime; }
 }
