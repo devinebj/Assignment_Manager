@@ -14,7 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.adapters.AssignmentAdapter;
 import com.example.myapplication.managers.AssignmentManager;
-import com.example.myapplication.managers.CalendarUtils;
+import com.example.myapplication.utility.CalendarUtils;
+import com.example.myapplication.utility.AssignmentUtils;
 import com.example.myapplication.managers.EventManager;
 import com.example.myapplication.models.Assignment;
 import com.example.myapplication.models.Event;
@@ -142,6 +143,33 @@ public class DailyViewFragment extends Fragment {
             list.add(new HourEvent(time, events));
         }
 
+        AssignmentManager assignmentManager = AssignmentManager.getInstance(requireContext());
+        for(Assignment assignment : assignmentManager.getAssignments()){
+            Calendar dueDateCalendar = Calendar.getInstance();
+            dueDateCalendar.setTime(assignment.getDueDate());
+
+            if(dueDateCalendar.get(Calendar.YEAR) == CalendarUtils.selectedDate.get(Calendar.YEAR) &&
+               dueDateCalendar.get(Calendar.DAY_OF_YEAR) == CalendarUtils.selectedDate.get(Calendar.DAY_OF_YEAR)){
+
+                Event assignmentEvent = AssignmentUtils.convertToEvent(assignment);
+                Calendar eventTime = assignmentEvent.getTime();
+
+                for(HourEvent hourEvent : list) {
+                    if (isSameHour(eventTime, hourEvent.getTime())) {
+                        hourEvent.getEvents().add(assignmentEvent);
+                        break;
+                    }
+                }
+            }
+        }
+
         return list;
+    }
+
+    private boolean isSameHour (Calendar a, Calendar b){
+        return a.get(Calendar.YEAR) == b.get(Calendar.YEAR) &&
+               a.get(Calendar.MONTH) == b.get(Calendar.MONTH) &&
+               a.get(Calendar.DAY_OF_MONTH) == b.get(Calendar.DAY_OF_MONTH) &&
+               a.get(Calendar.HOUR_OF_DAY) == b.get(Calendar.HOUR_OF_DAY);
     }
 }

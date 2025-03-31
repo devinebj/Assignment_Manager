@@ -2,7 +2,6 @@ package com.example.myapplication.fragments;
 
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.adapters.AssignmentAdapter;
 import com.example.myapplication.adapters.CalendarAdapter;
 import com.example.myapplication.managers.AssignmentManager;
-import com.example.myapplication.managers.CalendarUtils;
+import com.example.myapplication.utility.CalendarUtils;
 import com.example.myapplication.models.Assignment;
 
 import java.util.ArrayList;

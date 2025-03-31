@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.adapters.AssignmentAdapter;
 import com.example.myapplication.adapters.CalendarAdapter;
 import com.example.myapplication.managers.AssignmentManager;
-import com.example.myapplication.managers.CalendarUtils;
+import com.example.myapplication.utility.CalendarUtils;
 import com.example.myapplication.models.Assignment;
 import com.example.myapplication.R;
 

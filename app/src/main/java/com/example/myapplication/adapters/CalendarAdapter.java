@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.managers.CalendarUtils;
+import com.example.myapplication.utility.CalendarUtils;
 
 import java.util.Calendar;
 import java.util.List;
