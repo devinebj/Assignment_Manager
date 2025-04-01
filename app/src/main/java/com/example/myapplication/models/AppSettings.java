@@ -7,17 +7,28 @@ public class AppSettings {
     private List<Assignment> assignments;
     private List<Course> courses;
     private int daysToNotify;
+    private String semesterEndDate;
 
-    public AppSettings(List<Assignment> assignments, List<Course> courses, int daysToNotify){
+    public AppSettings(String semesterEndDate, List<Assignment> assignments, List<Course> courses, int daysToNotify){
+        this.semesterEndDate = semesterEndDate;
         this.assignments = assignments;
         this.courses = courses;
         this.daysToNotify = daysToNotify;
     }
 
     public AppSettings(){
+        this.semesterEndDate = "";
         this.assignments = new ArrayList<>();
         this.courses = new ArrayList<>();
         this.daysToNotify = 7;
+    }
+
+    public String getSemesterEndDate(){
+        return semesterEndDate;
+    }
+
+    public void setSemesterEndDate(String semesterEndDate){
+        this.semesterEndDate = semesterEndDate;
     }
 
     public List<Assignment> getAssignments() {

@@ -1,5 +1,6 @@
 package com.example.myapplication.fragments;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -25,23 +26,21 @@ import com.example.myapplication.managers.CourseManager;
 import com.example.myapplication.R;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class SettingsFragment extends Fragment {
 
-    // UI Elements
-    Button addClassButton;
-    EditText daysToNotifyET;
+    Button addCourseButton;
+    EditText daysToNotifyET, semesterEndDateET;
     RecyclerView coursesRecyclerView;
     View rootView;
 
-    // Managers and data
     CourseAdapter courseAdapter;
     CourseManager courseManager;
     SettingsManager settingsManager;
     List<Course> courses;
 
-    // Constants
     private static final int MAX_DAYS_TO_NOTIFY = 7;
 
     @Nullable
@@ -57,8 +56,9 @@ public class SettingsFragment extends Fragment {
         courses = courseManager.getCourses();
 
         initializeViews();
+        semesterEndDateET.setOnClickListener(v -> showDatePicker());
         setupRecyclerView();
-        setupAddClassButton(inflater);
+        setupAddCourseButton(inflater);
         setupDaysToNotifyEditText();
 
         return rootView;
@@ -71,12 +71,34 @@ public class SettingsFragment extends Fragment {
     }
 
     private void initializeViews(){
-        addClassButton = rootView.findViewById(R.id.add_course_button);
+        addCourseButton = rootView.findViewById(R.id.add_course_button);
         daysToNotifyET = rootView.findViewById(R.id.days_to_notify_et);
         coursesRecyclerView = rootView.findViewById(R.id.courses_rv);
+        semesterEndDateET = rootView.findViewById(R.id.semester_end_date_et);
 
         // Initialize the days-to-notify field with the saved value
         daysToNotifyET.setText(String.valueOf(SettingsManager.getInstance(requireContext()).loadDaysToNotify()));
+
+        String savedDate = settingsManager.loadSemesterEndDate();
+        if (!TextUtils.isEmpty(savedDate)) {
+            semesterEndDateET.setText(savedDate);
+        }
+    }
+
+    private void showDatePicker() {
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+                    String dateString = (selectedMonth + 1) + "/" + selectedDay + "/" + selectedYear;
+                    semesterEndDateET.setText(dateString);
+                    settingsManager.saveSemesterEndDate(dateString);
+                },
+                year, month, day);
+        datePickerDialog.show();
     }
 
     private void setupRecyclerView() {
@@ -85,8 +107,8 @@ public class SettingsFragment extends Fragment {
         coursesRecyclerView.setAdapter(courseAdapter);
     }
 
-    private void setupAddClassButton(LayoutInflater inflater){
-        addClassButton.setOnClickListener(v -> showAddCoursePopup(inflater));
+    private void setupAddCourseButton(LayoutInflater inflater){
+        addCourseButton.setOnClickListener(v -> showAddCoursePopup(inflater));
     }
 
     private void showAddCoursePopup(final LayoutInflater inflater){

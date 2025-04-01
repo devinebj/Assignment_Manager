@@ -6,7 +6,6 @@ import com.example.myapplication.models.AppSettings;
 import com.example.myapplication.models.Assignment;
 import com.example.myapplication.models.Course;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SettingsManager {
@@ -29,6 +28,15 @@ public class SettingsManager {
 
     private void saveSettings() {
         FileManager.saveToFile(context, appSettings);
+    }
+
+    public String loadSemesterEndDate() {
+        return appSettings.getSemesterEndDate();
+    }
+
+    public void saveSemesterEndDate(String endDate){
+        appSettings.setSemesterEndDate(endDate);
+        saveSettings();
     }
 
     public int loadDaysToNotify() {
