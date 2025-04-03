@@ -17,14 +17,12 @@ import com.example.myapplication.R;
 import com.example.myapplication.fragments.AddAssignmentFragment;
 import com.example.myapplication.managers.AssignmentManager;
 import com.example.myapplication.models.Assignment;
+import com.example.myapplication.utility.CalendarUtils;
 
 import java.util.List;
 import java.util.Locale;
 
 public class NotificationAdapter extends BaseAdapter<Assignment, NotificationAdapter.NotificationViewHolder> {
-
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
-    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm", Locale.US);
 
     public NotificationAdapter(Context context, List<Assignment> assignments) {
         super(context, assignments);
@@ -40,13 +38,16 @@ public class NotificationAdapter extends BaseAdapter<Assignment, NotificationAda
     @Override
     public void onBindViewHolder(@NonNull NotificationViewHolder holder, int position) {
         Assignment assignment = items.get(position);
-        String dueDateString = DATE_FORMAT.format(assignment.getDueDate());
+        String dueDateString = CalendarUtils.formattedDate(assignment.getDueDate());
+        String dueTimeString = CalendarUtils.formattedTime(assignment.getDueTime());
 
         holder.assignmentName.setText(assignment.getName());
         holder.courseName.setText(assignment.getCourse());
-        holder.pointsPossible.setText(context.getString(R.string.notification_points_possible, assignment.getPointsPossible()));
-        holder.gradeWeight.setText(context.getString(R.string.notification_grade_weight, (float)assignment.getGradeWeight()));
-        holder.dueDate.setText(context.getString(R.string.notification_due_date, assignment.getDueDate()));
+        holder.pointsPossible.setText(context.getString(R.string.assignment_cell_points_possible, assignment.getPointsPossible()));
+        holder.gradeWeight.setText(context.getString(R.string.assignment_cell_grade_weight, (float)assignment.getGradeWeight()));
+        holder.dueDate.setText(context.getString(R.string.assignment_cell_due_date, dueDateString));
+        holder.dueTime.setText(context.getString(R.string.assignment_cell_due_time, dueTimeString));
+
 
         //Complete Button
         holder.completeButton.setOnClickListener(v -> {
@@ -67,11 +68,11 @@ public class NotificationAdapter extends BaseAdapter<Assignment, NotificationAda
            bundle.putInt("gradeWeight", assignment.getGradeWeight());
 
            if(assignment.getDueDate() != null){
-               bundle.putString("dueDate", DATE_FORMAT.format(assignment.getDueDate()));
+               bundle.putString("dueDate", dueDateString);
            }
 
            if(assignment.getDueTime() != null) {
-               bundle.putString("dueTime", TIME_FORMAT.format(assignment.getDueTime()));
+               bundle.putString("dueTime", dueTimeString);
            }
 
            AddAssignmentFragment fragment = new AddAssignmentFragment();

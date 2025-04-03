@@ -8,9 +8,9 @@
         <string name="title_add">Add Assignment</string>
         <string name="title_settings">Settings</string>
 
-    <!--Notification Strings -->
-        <string name="notification_points_possible">Points: %1$d</string>
-        <string name="notification_grade_weight">Weight: %.1f%%</string>
-        <string name="notification_due_date">Due: %1$s</string>
-        <string name="notification_due_time">Time: </string>
+    <!--Assignment Cell Strings -->
+        <string name="assignment_cell_points_possible">Points: %1$d</string>
+        <string name="assignment_cell_grade_weight">Weight: %.1f%%</string>
+        <string name="assignment_cell_due_date">Due: %1$s</string>
+        <string name="assignment_cell_due_time">Time: %1$s</string>
 </resources>

@@ -257,6 +257,7 @@ public class AddAssignmentFragment extends Fragment {
         gradeWeightEditText.setText("");
         pointsPossibleEditText.setText("");
         dueDateEditText.setText("");
+        dueTimeEditText.setText("");
     }
 
     private void showToast(String message) {

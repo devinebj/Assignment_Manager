@@ -29,7 +29,7 @@ import java.util.Locale;
 public class HomeFragment extends Fragment implements CalendarAdapter.OnItemListener {
     private TextView monthYearTV;
     private RecyclerView calendarRecyclerView, monthAssignmentRecyclerView;
-    private Button prevMonthBtn, nextMonthBtn, dayViewBtn, weekViewBtn;
+    private Button prevMonthBtn, nextMonthBtn, dayViewBtn, weekViewBtn, addAssignmentBtn;
     private Calendar currentCalendar;
     private CalendarAdapter calendarAdapter;
     private ArrayList<Calendar> daysInMonthList;
@@ -55,6 +55,7 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         nextMonthBtn = view.findViewById(R.id.nextMonthBtn);
         dayViewBtn = view.findViewById(R.id.day_view_button);
         weekViewBtn = view.findViewById(R.id.week_view_button);
+        addAssignmentBtn = view.findViewById(R.id.new_assignment_button);
     }
 
     private void setupCalendar() {
@@ -72,6 +73,7 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
     private void setupListeners() {
         dayViewBtn.setOnClickListener(v -> switchFragment(new DailyViewFragment()));
         weekViewBtn.setOnClickListener(v -> switchFragment(new WeekViewFragment()));
+        addAssignmentBtn.setOnClickListener(v -> switchFragment(new AddAssignmentFragment()));
 
         prevMonthBtn.setOnClickListener(v -> {
             currentCalendar.add(Calendar.MONTH, -1);

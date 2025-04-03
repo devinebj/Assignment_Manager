@@ -48,7 +48,7 @@ public class WeekViewFragment extends Fragment implements CalendarAdapter.OnItem
 
         prevWeekBtn = view.findViewById(R.id.prevWeekBtn);
         nextWeekBtn = view.findViewById(R.id.nextWeekBtn);
-        addAssignmentBtn = view.findViewById(R.id.add_event_button);
+        addAssignmentBtn = view.findViewById(R.id.new_assignment_button);
         dayViewBtn = view.findViewById(R.id.day_view_button);
         monthViewBtn = view.findViewById(R.id.month_view_button);
     }

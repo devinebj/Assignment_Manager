@@ -155,7 +155,7 @@
         android:layout_weight=".75" />
 
     <Button
-        android:id="@+id/add_event_button"
+        android:id="@+id/new_assignment_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Assignment"

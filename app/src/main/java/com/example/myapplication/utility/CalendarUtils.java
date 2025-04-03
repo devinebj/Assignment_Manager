@@ -4,26 +4,32 @@ import android.icu.text.SimpleDateFormat;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class CalendarUtils{
     public static Calendar selectedDate = Calendar.getInstance();
 
     private static final SimpleDateFormat MONTH_FORMAT = new SimpleDateFormat( "MMMM yyyy", Locale.US);
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd MM yyyy", Locale.US);
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMMM dd, yyyy", Locale.US);
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("hh:mm:ss a", Locale.US);
+    private static final SimpleDateFormat EDIT_TIME_FORMAT = new SimpleDateFormat("HH:mm a", Locale.US);
 
-    public static String formattedMonth(Calendar date){
-        return MONTH_FORMAT.format(date.getTime());
-    }
+    public static String formattedMonth(Calendar date) { return MONTH_FORMAT.format(date.getTime()); }
 
-    public static String formattedDate(Calendar date) {
-        return DATE_FORMAT.format(date.getTime());
-    }
+    public static String formattedDate(Calendar date) { return DATE_FORMAT.format(date.getTime()); }
+
+    public static String formattedDate(Date date) { return DATE_FORMAT.format(toCalendar(date).getTime()); }
 
     public static String formattedTime(Calendar time) {
         return TIME_FORMAT.format(time.getTime());
     }
+
+    public static String formattedTime(Date time) { return TIME_FORMAT.format(toCalendar(time).getTime()); }
+
+    public static String toStorageDate(Date date) { return DATE_FORMAT.format(toCalendar(date).getTime()); }
+
+    public static String toStorageTime(Date time) { return EDIT_TIME_FORMAT.format(time.getTime()); }
 
     public static ArrayList<Calendar> daysInMonthArray() {
         ArrayList<Calendar> daysInMonthArray = new ArrayList<>();
@@ -67,5 +73,11 @@ public class CalendarUtils{
         return date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR) &&
                 date1.get(Calendar.MONTH) == date2.get(Calendar.MONTH) &&
                 date1.get(Calendar.DAY_OF_MONTH) == date2.get(Calendar.DAY_OF_MONTH);
+    }
+
+    private static Calendar toCalendar(Date date){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar;
     }
 }
