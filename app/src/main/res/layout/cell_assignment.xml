@@ -27,7 +27,7 @@
             android:textStyle="bold"
             android:textColor="@color/black"
             android:maxLines="1"
-            android:ellipsize="end"/>
+            android:ellipsize="end" />
 
         <TextView
             android:id="@+id/cell_assignment_course_tv"
@@ -69,6 +69,7 @@
                 android:textSize="14sp"
                 android:textColor="@color/red"
                 android:maxLines="1"/>
+
             <TextView
                 android:id="@+id/cell_assignment_due_time_tv"
                 android:layout_width="match_parent"
@@ -126,6 +127,7 @@
             android:textSize="14sp"
             android:layout_gravity="start"/>
 
+        <!-- This View acts as a spacer to push 'Complete' to the right -->
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -139,6 +141,37 @@
             android:text="Complete"
             android:textSize="14sp"
             android:textColor="@color/white"/>
+    </LinearLayout>
+
+    <!-- Timer Row: TextView & Start/Stop Buttons -->
+    <LinearLayout
+        android:id="@+id/timer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:id="@+id/timer_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time: 00:00:00"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:layout_marginEnd="16dp" />
+
+        <Button
+            android:id="@+id/start_timer_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start" />
+
+        <Button
+            android:id="@+id/stop_timer_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop"
+            android:layout_marginStart="8dp" />
     </LinearLayout>
 
 </LinearLayout>

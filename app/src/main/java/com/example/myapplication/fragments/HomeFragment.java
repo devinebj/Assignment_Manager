@@ -2,6 +2,7 @@ package com.example.myapplication.fragments;
 
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
+import android.os.Handler; // <-- IMPORTANT
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,14 +20,15 @@ import com.example.myapplication.R;
 import com.example.myapplication.adapters.AssignmentAdapter;
 import com.example.myapplication.adapters.CalendarAdapter;
 import com.example.myapplication.managers.AssignmentManager;
-import com.example.myapplication.utility.CalendarUtils;
 import com.example.myapplication.models.Assignment;
+import com.example.myapplication.utility.CalendarUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
 public class HomeFragment extends Fragment implements CalendarAdapter.OnItemListener {
+
     private TextView monthYearTV;
     private RecyclerView calendarRecyclerView, monthAssignmentRecyclerView;
     private Button prevMonthBtn, nextMonthBtn, dayViewBtn, weekViewBtn, addAssignmentBtn;
@@ -34,17 +36,49 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
     private CalendarAdapter calendarAdapter;
     private ArrayList<Calendar> daysInMonthList;
 
+    // NEW: Keep reference to monthlyAdapter and a handler for live updates
+    private AssignmentAdapter monthlyAdapter;
+    private Handler timerHandler = new Handler();
+    private Runnable timerRunnable;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
         initViews(rootView);
         setupCalendar();
         setupListeners();
-        updateMonthlyAssignments();
+        updateMonthlyAssignments(); // sets up 'monthlyAdapter'
+
+        // Create a runnable that rebinds the adapter every second
+        timerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (monthlyAdapter != null) {
+                    monthlyAdapter.notifyDataSetChanged();
+                }
+                timerHandler.postDelayed(this, 1000); // refresh again in 1 second
+            }
+        };
+
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Start the periodic timer updates when this fragment is visible
+        timerHandler.post(timerRunnable);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Stop the updates when the fragment is not visible
+        timerHandler.removeCallbacks(timerRunnable);
     }
 
     private void initViews(View view) {
@@ -106,7 +140,7 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         calendarAdapter.notifyDataSetChanged();
     }
 
-    private void updateCalendarAndDisplay(){
+    private void updateCalendarAndDisplay() {
         updateMonthYearDisplay();
         updateCalendar();
         updateMonthlyAssignments();
@@ -125,14 +159,14 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
             Calendar dueDate = Calendar.getInstance();
             dueDate.setTime(assignment.getDueDate());
 
-            if(!dueDate.before(monthStart) && !dueDate.after(monthEnd)) {
+            if (!dueDate.before(monthStart) && !dueDate.after(monthEnd)) {
                 monthlyAssignments.add(assignment);
             }
         }
 
         monthAssignmentRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        AssignmentAdapter adapter = new AssignmentAdapter(requireContext(), monthlyAssignments);
-        monthAssignmentRecyclerView.setAdapter(adapter);
+        monthlyAdapter = new AssignmentAdapter(requireContext(), monthlyAssignments);
+        monthAssignmentRecyclerView.setAdapter(monthlyAdapter);
     }
 
     @Override

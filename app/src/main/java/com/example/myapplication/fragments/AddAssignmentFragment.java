@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -45,6 +46,9 @@ public class AddAssignmentFragment extends Fragment {
     private TextView assignmentNameLabel, dueDateLabel, pointsPossibleLabel, dueTimeLabel;
     private AssignmentManager assignmentManager;
 
+    // NEW: CheckBox to optionally start timer immediately
+    private CheckBox startTimerCheckBox;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -60,11 +64,11 @@ public class AddAssignmentFragment extends Fragment {
         setupDueTimePicker();
 
         Bundle args = getArguments();
-        if(args != null && "edit".equals(args.getString("mode"))) {
+        if (args != null && "edit".equals(args.getString("mode"))) {
             populateFieldsForEdit(args);
         }
-        setupAddAssignmentButton();
 
+        setupAddAssignmentButton();
         return rootView;
     }
 
@@ -75,12 +79,17 @@ public class AddAssignmentFragment extends Fragment {
         courseSpinner = rootView.findViewById(R.id.courses_spinner);
         dueDateEditText = rootView.findViewById(R.id.due_date_et);
         dueTimeEditText = rootView.findViewById(R.id.due_time_et);
+
         assignmentNameLabel = rootView.findViewById(R.id.assignment_name_tv);
         pointsPossibleLabel = rootView.findViewById(R.id.points_possible_tv);
         dueDateLabel = rootView.findViewById(R.id.due_date_tv);
         dueTimeLabel = rootView.findViewById(R.id.due_time_tv);
+
         addAssignmentButton = rootView.findViewById(R.id.add_assignment_button);
         deleteAssignmentButton = rootView.findViewById(R.id.delete_assignment_button);
+
+        // Initialize CheckBox
+        startTimerCheckBox = rootView.findViewById(R.id.start_timer_checkbox);
     }
 
     private void setupSpinner() {
@@ -113,48 +122,57 @@ public class AddAssignmentFragment extends Fragment {
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
-            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    requireContext(),
                     (view, selectedYear, selectedMonth, selectedDay) -> {
-                        // Note: selectedMonth is zero-indexed.
+                        // Note: selectedMonth is zero-indexed
                         String selectedDate = String.format(Locale.US, "%02d/%02d/%d",
                                 selectedMonth + 1, selectedDay, selectedYear);
                         dueDateEditText.setText(selectedDate);
-                    }, year, month, day);
+                    },
+                    year, month, day);
+
             datePickerDialog.show();
         });
     }
 
     private void setupDueTimePicker() {
         dueTimeEditText.setOnClickListener(v -> {
-           Calendar calendar = Calendar.getInstance();
-           int hour = calendar.get(Calendar.HOUR_OF_DAY);
-           int minute = calendar.get(Calendar.MINUTE);
-           TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(),
-                   (view, selectedHour, selectedMinute) -> {
-                        String selectedTime = String.format(Locale.US, "%02d:%02d", selectedHour, selectedMinute);
+            Calendar calendar = Calendar.getInstance();
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            int minute = calendar.get(Calendar.MINUTE);
+
+            TimePickerDialog timePickerDialog = new TimePickerDialog(
+                    requireContext(),
+                    (view, selectedHour, selectedMinute) -> {
+                        String selectedTime = String.format(Locale.US, "%02d:%02d",
+                                selectedHour, selectedMinute);
                         dueTimeEditText.setText(selectedTime);
-                   }, hour, minute, true);
-           timePickerDialog.show();
+                    },
+                    hour, minute, true);
+
+            timePickerDialog.show();
         });
     }
 
-    private void populateFieldsForEdit(Bundle args){
+    private void populateFieldsForEdit(Bundle args) {
         originalAssignmentName = args.getString("assignmentName");
         assignmentNameEditText.setText(args.getString("assignmentName"));
         pointsPossibleEditText.setText(String.valueOf(args.getInt("pointsPossible")));
         gradeWeightEditText.setText(String.valueOf(args.getInt("gradeWeight")));
         dueDateEditText.setText(args.getString("dueDate"));
+
         if (args.getString("dueTime") != null) {
             dueTimeEditText.setText(args.getString("dueTime"));
         }
-
 
         String courseName = args.getString("courseName");
         int spinnerPosition = spinnerAdapter.getPosition(courseName);
         courseSpinner.setSelection(spinnerPosition);
 
         TextView header = rootView.findViewById(R.id.assignment_header_tv);
-        if(header != null){
+        if (header != null) {
             header.setText("Edit Assignment");
         }
 
@@ -166,7 +184,7 @@ public class AddAssignmentFragment extends Fragment {
     private void setupAddAssignmentButton() {
         addAssignmentButton.setOnClickListener(v -> {
             Bundle args = getArguments();
-            boolean isEditMode = args != null && "edit".equals(args.getString("mode"));
+            boolean isEditMode = (args != null && "edit".equals(args.getString("mode")));
 
             if (!validateInput()) {
                 return;
@@ -180,7 +198,8 @@ public class AddAssignmentFragment extends Fragment {
             String course = courseSpinner.getSelectedItem().toString();
             String assignmentName = assignmentNameEditText.getText().toString();
             int pointsPossible = Integer.parseInt(pointsPossibleEditText.getText().toString());
-            int gradeWeight = gradeWeightEditText.getText().toString().isEmpty() ? 0
+            int gradeWeight = gradeWeightEditText.getText().toString().isEmpty()
+                    ? 0
                     : Integer.parseInt(gradeWeightEditText.getText().toString());
             String dueDateString = dueDateEditText.getText().toString();
             String dueTimeString = dueTimeEditText.getText().toString();
@@ -192,13 +211,26 @@ public class AddAssignmentFragment extends Fragment {
             }
 
             Date dueTime = parseTimeString(dueTimeString);
-            if (dueTime == null){
+            if (dueTime == null) {
                 showToast("Invalid time format: Please use HH:mm.");
                 return;
             }
 
-            Assignment assignment = new Assignment(course, assignmentName, pointsPossible, gradeWeight, dueDate, dueTime);
-            if(isEditMode){
+            Assignment assignment = new Assignment(
+                    course,
+                    assignmentName,
+                    pointsPossible,
+                    gradeWeight,
+                    dueDate,
+                    dueTime
+            );
+
+            // If creating NEW assignment (not editing) AND user wants to start timer immediately
+            if (!isEditMode && startTimerCheckBox.isChecked()) {
+                assignment.startTimer();
+            }
+
+            if (isEditMode) {
                 assignmentManager.updateAssignment(originalAssignmentName, assignment);
                 showToast("Assignment Updated!");
             } else {
@@ -211,26 +243,38 @@ public class AddAssignmentFragment extends Fragment {
     }
 
     private boolean validateInput() {
-        boolean isValid = courseSpinner.getSelectedItem() != null;
+        boolean isValid = true;
 
+        // Ensure there's at least one Course in the spinner
+        if (courseSpinner.getSelectedItem() == null) {
+            showToast("Please add/select a course before creating assignments.");
+            isValid = false;
+        }
+
+        // Required: Assignment Name
         if (assignmentNameEditText.getText().toString().trim().isEmpty()) {
             markRequired(assignmentNameLabel, "Assignment Name *");
             isValid = false;
         }
 
-        if (pointsPossibleEditText.getText().toString().trim().isEmpty()){
+        // Required: Points Possible
+        if (pointsPossibleEditText.getText().toString().trim().isEmpty()) {
             markRequired(pointsPossibleLabel, "Points Possible *");
             isValid = false;
         }
 
+        // Required: Due Date
         if (dueDateEditText.getText().toString().trim().isEmpty()) {
             markRequired(dueDateLabel, "Due Date *");
             isValid = false;
         }
 
-        if(courseSpinner.getSelectedItem() == null) {
+        // Required: Due Time (if you want time mandatory)
+        if (dueTimeEditText.getText().toString().trim().isEmpty()) {
+            markRequired(dueTimeLabel, "Due Time *");
             isValid = false;
         }
+
         return isValid;
     }
 
@@ -258,26 +302,39 @@ public class AddAssignmentFragment extends Fragment {
         pointsPossibleEditText.setText("");
         dueDateEditText.setText("");
         dueTimeEditText.setText("");
+        startTimerCheckBox.setChecked(false);
     }
 
     private void showToast(String message) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
 
-    private void markRequired(TextView label, String baseText){
+    private void markRequired(TextView label, String baseText) {
         SpannableString spannable = new SpannableString(baseText);
-        spannable.setSpan(new ForegroundColorSpan(Color.RED), 0, baseText.length(),
-                SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(
+                new ForegroundColorSpan(Color.RED),
+                0,
+                baseText.length(),
+                SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
         label.setText(spannable);
     }
 
     private void resetRequired(TextView label, String baseText) {
         SpannableString spannable = new SpannableString(baseText);
         int starIndex = baseText.length() - 1;
-        spannable.setSpan(new ForegroundColorSpan(Color.BLACK), 0, starIndex,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannable.setSpan(new ForegroundColorSpan(Color.RED), starIndex, baseText.length(),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(
+                new ForegroundColorSpan(Color.BLACK),
+                0,
+                starIndex,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+        spannable.setSpan(
+                new ForegroundColorSpan(Color.RED),
+                starIndex,
+                baseText.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
         label.setText(spannable);
     }
 }
