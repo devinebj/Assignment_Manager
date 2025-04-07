@@ -1,10 +1,11 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
 
 android {
     namespace = "com.example.myapplication"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.myapplication"
@@ -47,6 +48,9 @@ dependencies {
     implementation(libs.preference)
     implementation(libs.firebase.crashlytics.buildtools)
     implementation("com.google.code.gson:gson:2.11.0")
+    implementation(platform("com.google.firebase:firebase-bom:33.12.0"))
+    implementation(libs.firebase.messaging)
+    implementation(libs.work.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
